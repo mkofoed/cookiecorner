@@ -233,11 +233,75 @@
   gap: 20px;
 }
 
+.wizardSteps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stepBadge {
+  padding: 10px 14px;
+  border: 1px solid #dcbca8;
+  border-radius: 999px;
+  background: #fffdf9;
+  color: #6f584b;
+  font-weight: 600;
+}
+
+.stepBadgeActive {
+  border-color: #c96d38;
+  background: #fff0e3;
+  color: #7d421f;
+}
+
+.optionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.optionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 150px;
+  padding: 20px;
+  border: 1px solid #f0d7c7;
+  border-radius: 24px;
+  background: #ffffff;
+  text-align: left;
+  color: #2b1b11;
+  cursor: pointer;
+}
+
+.optionCard span {
+  line-height: 1.6;
+  color: #6f584b;
+}
+
+.optionCardSelected {
+  border-color: #c96d38;
+  background: #fff0e3;
+  box-shadow: inset 0 0 0 1px #c96d38;
+}
+
+.wizardActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.successText {
+  color: #21613d;
+  line-height: 1.7;
+}
+
 @media (max-width: 820px) {
   .grid,
   .statusPanel,
   .twoColumn,
-  .formGrid {
+  .formGrid,
+  .optionGrid {
     grid-template-columns: 1fr;
   }
 

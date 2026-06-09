@@ -1,42 +1,65 @@
+import { connection } from "next/server";
+import { ConfiguratorWizard } from "../_components/configurator-wizard";
 import styles from "../_components/page-section.module.css";
+import { Product } from "../_components/storefront-types";
 
-const configurationSteps = [
-  "Choose size",
-  "Pick color",
-  "Add gift wrap",
-  "Review price and availability",
-];
+type ProductResult =
+  | { products: Product[]; error: null }
+  | { products: []; error: string };
 
-export default function ConfiguratorPage() {
+async function getProducts(): Promise<ProductResult> {
+  const apiBaseUrl = process.env.API_BASE_URL ?? "http://api:8080";
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/products`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      return {
+        products: [],
+        error: `Configurator product retrieval failed with status ${response.status}. ${detail}`,
+      };
+    }
+
+    return {
+      products: (await response.json()) as Product[],
+      error: null,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return {
+      products: [],
+      error: `Configurator product retrieval failed before the response was returned. ${message}`,
+    };
+  }
+}
+
+export default async function ConfiguratorPage() {
+  await connection();
+  const { products, error } = await getProducts();
+
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
         <span className={styles.eyebrow}>Configurator</span>
-        <h1>First step-by-step placeholder for configuring a Hyggefis.</h1>
+        <h1>Customize your Hyggefis one feature at a time.</h1>
         <p>
-          The eventual configurator will use structured product options from the
-          backend. For now, this page defines the main user journey and the UI
-          space it needs.
+          The configurator is now a wizard that walks through product, size,
+          color, and gift-wrap choices before adding the configured item to the
+          cart.
         </p>
       </section>
 
-      <section>
-        <h2 className={styles.sectionTitle}>Planned flow</h2>
-      </section>
-
-      <section className={styles.grid}>
-        {configurationSteps.map((step, index) => (
-          <article key={step} className={styles.card}>
-            <h3>
-              Step {index + 1}: {step}
-            </h3>
-            <p>
-              Placeholder content for the future configurator state, validations,
-              and pricing feedback.
-            </p>
-          </article>
-        ))}
-      </section>
+      {error ? (
+        <section className={styles.noticeCard}>
+          <h2>Configurator is not available yet</h2>
+          <p>{error}</p>
+        </section>
+      ) : (
+        <ConfiguratorWizard products={products} />
+      )}
     </div>
   );
 }

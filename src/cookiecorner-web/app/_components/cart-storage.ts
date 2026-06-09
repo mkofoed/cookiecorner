@@ -16,7 +16,18 @@ function readCart(): CartItem[] {
   }
 
   try {
-    return JSON.parse(rawCart) as CartItem[];
+    return (JSON.parse(rawCart) as Array<Partial<CartItem>>).map((item) => ({
+      cartItemId:
+        item.cartItemId ??
+        `${item.productId ?? "unknown"}-${crypto.randomUUID()}`,
+      productId: item.productId ?? 0,
+      name: item.name ?? "Unnamed Hyggefis",
+      price: item.price ?? 0,
+      quantity: item.quantity ?? 1,
+      size: item.size ?? null,
+      color: item.color ?? null,
+      configurationSummary: item.configurationSummary ?? [],
+    }));
   } catch {
     return [];
   }
@@ -33,34 +44,67 @@ export function getCartItems(): CartItem[] {
 
 export function addToCart(product: Product) {
   const cart = readCart();
-  const existingItem = cart.find((item) => item.productId === product.id);
+  const existingItem = cart.find(
+    (item) =>
+      item.productId === product.id &&
+      (item.configurationSummary?.length ?? 0) === 0,
+  );
 
   if (existingItem) {
     existingItem.quantity += 1;
   } else {
     cart.push({
+      cartItemId: `${product.id}-${crypto.randomUUID()}`,
       productId: product.id,
       name: product.name,
       price: product.price,
       quantity: 1,
       size: product.size,
       color: product.color,
+      configurationSummary: [],
     });
   }
 
   writeCart(cart);
 }
 
-export function updateCartItemQuantity(productId: number, quantity: number) {
+type ConfiguredCartOptions = {
+  color: string;
+  giftWrap: boolean;
+  size: string;
+};
+
+export function addConfiguredToCart(product: Product, options: ConfiguredCartOptions) {
+  const cart = readCart();
+
+  cart.push({
+    cartItemId: `${product.id}-${crypto.randomUUID()}`,
+    productId: product.id,
+    name: `${product.name} - Configured`,
+    price: product.price,
+    quantity: 1,
+    size: options.size,
+    color: options.color,
+    configurationSummary: [
+      `Configured size: ${options.size}`,
+      `Configured color: ${options.color}`,
+      `Gift wrap: ${options.giftWrap ? "Yes" : "No"}`,
+    ],
+  });
+
+  writeCart(cart);
+}
+
+export function updateCartItemQuantity(cartItemId: string, quantity: number) {
   const cart = readCart()
-    .map((item) => (item.productId === productId ? { ...item, quantity } : item))
+    .map((item) => (item.cartItemId === cartItemId ? { ...item, quantity } : item))
     .filter((item) => item.quantity > 0);
 
   writeCart(cart);
 }
 
-export function removeCartItem(productId: number) {
-  const cart = readCart().filter((item) => item.productId !== productId);
+export function removeCartItem(cartItemId: string) {
+  const cart = readCart().filter((item) => item.cartItemId !== cartItemId);
   writeCart(cart);
 }
 

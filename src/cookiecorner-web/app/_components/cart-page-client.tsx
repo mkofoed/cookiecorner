@@ -35,12 +35,19 @@ export function CartPageClient() {
     <section className={styles.page}>
       <section className={styles.listPanel}>
         {items.map((item) => (
-          <article key={item.productId} className={styles.lineItem}>
+          <article key={item.cartItemId} className={styles.lineItem}>
             <div>
               <h2>{item.name}</h2>
               <p>
                 Size: {item.size ?? "Unknown"} | Color: {item.color ?? "Unknown"}
               </p>
+              {item.configurationSummary?.length ? (
+                <ul className={styles.list}>
+                  {item.configurationSummary.map((summaryLine) => (
+                    <li key={summaryLine}>{summaryLine}</li>
+                  ))}
+                </ul>
+              ) : null}
               <p>Unit price: {item.price.toFixed(2)}</p>
             </div>
 
@@ -51,7 +58,7 @@ export function CartPageClient() {
                   className={styles.numberInput}
                   min={1}
                   onChange={(event) =>
-                    updateCartItemQuantity(item.productId, Number(event.target.value))
+                    updateCartItemQuantity(item.cartItemId, Number(event.target.value))
                   }
                   type="number"
                   value={item.quantity}
@@ -59,7 +66,7 @@ export function CartPageClient() {
               </label>
               <button
                 className={styles.secondaryButton}
-                onClick={() => removeCartItem(item.productId)}
+                onClick={() => removeCartItem(item.cartItemId)}
                 type="button"
               >
                 Remove

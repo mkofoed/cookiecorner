@@ -11,12 +11,14 @@ export type Product = {
 };
 
 export type CartItem = {
+  cartItemId: string;
   productId: number;
   name: string;
   price: number;
   quantity: number;
   size: string | null;
   color: string | null;
+  configurationSummary?: string[];
 };
 
 export type Order = {

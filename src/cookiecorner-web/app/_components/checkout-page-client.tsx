@@ -49,6 +49,13 @@ export function CheckoutPageClient() {
     setError(null);
 
     try {
+      const configurationNotes = items
+        .filter((item) => item.configurationSummary?.length)
+        .map(
+          (item) =>
+            `${item.name}: ${(item.configurationSummary ?? []).join(", ")}`,
+        );
+
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
@@ -57,7 +64,8 @@ export function CheckoutPageClient() {
         body: JSON.stringify({
           ...form,
           customerPhone: form.customerPhone || null,
-          notes: form.notes || null,
+          notes:
+            [form.notes, ...configurationNotes].filter(Boolean).join(" | ") || null,
           items: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
@@ -183,7 +191,7 @@ export function CheckoutPageClient() {
       <aside className={styles.noticeCard}>
         <h2>Order summary</h2>
         {items.map((item) => (
-          <p key={item.productId}>
+          <p key={item.cartItemId}>
             {item.name} x {item.quantity} — {(item.price * item.quantity).toFixed(2)}
           </p>
         ))}
