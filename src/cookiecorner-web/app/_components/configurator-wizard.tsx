@@ -175,11 +175,6 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
       </section>
 
       <aside className={styles.productSidebar}>
-        <div className={styles.sidebarTop}>
-          <div className={styles.iconBadge}>◎</div>
-          <div className={styles.iconBadge}>🧺</div>
-        </div>
-
         <section className={styles.sidebarSection}>
           <h2>Description</h2>
           <p>{productDescription}</p>

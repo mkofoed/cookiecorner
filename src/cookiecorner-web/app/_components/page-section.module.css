@@ -27,18 +27,18 @@
 }
 
 .collectionBadge {
-  width: 164px;
-  height: 164px;
+  width: 220px;
+  min-height: 220px;
   display: grid;
   place-items: center;
-  padding: 20px;
-  border-radius: 28px;
+  padding: 28px;
+  border-radius: 36px;
   background:
     radial-gradient(circle at 30% 30%, rgba(126, 76, 44, 0.2) 0 7px, transparent 8px),
     radial-gradient(circle at 68% 58%, rgba(126, 76, 44, 0.18) 0 8px, transparent 9px),
     linear-gradient(180deg, #f4c993 0%, #dd9d60 100%);
   color: #5c2e15;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1.1;
   text-align: center;
@@ -256,22 +256,6 @@
   background:
     linear-gradient(180deg, rgba(255, 252, 247, 0.98) 0%, rgba(255, 245, 233, 0.98) 100%);
   border-left: 1px solid #e7c9aa;
-}
-
-.sidebarTop {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 24px 40px 12px;
-}
-
-.iconBadge {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  font-size: 22px;
-  color: #8f4a24;
 }
 
 .sidebarSection {
@@ -802,8 +786,7 @@
   .productVisualPanel,
   .sidebarSection,
   .purchaseRow,
-  .recipeSummary,
-  .sidebarTop {
+  .recipeSummary {
     padding-left: 24px;
     padding-right: 24px;
   }
