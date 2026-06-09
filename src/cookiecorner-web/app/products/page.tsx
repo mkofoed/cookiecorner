@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { AddToCartButton } from "../_components/add-to-cart-button";
+import Link from "next/link";
 import styles from "../_components/page-section.module.css";
 import { Product } from "../_components/storefront-types";
 
@@ -43,11 +43,12 @@ export default async function ProductsPage() {
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
-        <span className={styles.eyebrow}>Products</span>
-        <h1>First product overview for the CookieCorner storefront.</h1>
+        <span className={styles.eyebrow}>Store</span>
+        <h1>Fresh from the oven: build your Hyggefis in the cookie customizer.</h1>
         <p>
-          This page now reads products through the local API, which proxies the
-          HyggeFrame product endpoints with the configured API key.
+          The storefront now uses the HyggeFrame catalog behind the scenes, but
+          customers start by configuring a Hyggefis from scratch instead of
+          choosing from an existing stock list.
         </p>
       </section>
 
@@ -57,26 +58,44 @@ export default async function ProductsPage() {
           <p>{error}</p>
         </section>
       ) : (
-        <section className={styles.grid}>
-          {products.map((product) => (
-            <article key={product.id} className={styles.card}>
-              <h2>{product.name}</h2>
-              <p>{product.description ?? "No description is available yet."}</p>
+        <>
+          <section className={styles.grid}>
+            <article className={styles.card}>
+              <h2>Choose your size</h2>
               <p>
-                Size: {product.size ?? "Unknown"}
-                <br />
-                Color: {product.color ?? "Unknown"}
-                <br />
-                Price: {product.price.toFixed(2)}
-                <br />
-                Stock: {product.stockQuantity}
-                <br />
-                Availability: {product.isAvailable ? "Available" : "Unavailable"}
+                CookieCorner sizes currently available in the bakery:{" "}
+                {Array.from(
+                  new Set(products.map((product) => product.size).filter(Boolean)),
+                ).join(", ")}
               </p>
-              <AddToCartButton className={styles.primaryButton} product={product} />
             </article>
-          ))}
-        </section>
+            <article className={styles.card}>
+              <h2>Pick your color</h2>
+              <p>
+                Frosting colors currently supported:{" "}
+                {Array.from(
+                  new Set(products.map((product) => product.color).filter(Boolean)),
+                ).join(", ")}
+              </p>
+            </article>
+            <article className={styles.card}>
+              <h2>Finish your cookie-order ritual</h2>
+              <p>
+                Review your choices one step at a time and add the configured item
+                to your cart.
+              </p>
+              <Link href="/configurator">Open customizer</Link>
+            </article>
+          </section>
+
+          <section className={styles.noticeCard}>
+            <h2>No stock list shown</h2>
+            <p>
+              Product inventory stays hidden from the storefront. The API catalog is
+              only used to power valid size and color choices behind the scenes.
+            </p>
+          </section>
+        </>
       )}
     </div>
   );

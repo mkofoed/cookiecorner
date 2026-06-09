@@ -1,6 +1,8 @@
 .site {
   min-height: 100vh;
-  background: linear-gradient(180deg, #fff8ef 0%, #fffdf8 100%);
+  background:
+    radial-gradient(circle at top left, rgba(255, 212, 168, 0.55), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(214, 165, 118, 0.28), transparent 26%);
   color: #2b1b11;
 }
 
@@ -8,9 +10,10 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  border-bottom: 1px solid #f0d7c7;
-  background: rgba(255, 253, 248, 0.95);
-  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e3c4a4;
+  background: rgba(255, 248, 238, 0.88);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(114, 69, 38, 0.08);
 }
 
 .headerInner {
@@ -28,17 +31,23 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 10px 16px;
+  border: 1px solid #e7c9aa;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fff8ee 0%, #fff1dd 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .brandName {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.04em;
+  color: #8f4a24;
 }
 
 .brandTagline {
   font-size: 13px;
-  color: #6f584b;
+  color: #7f6553;
 }
 
 .nav {
@@ -51,26 +60,33 @@
 .navLink {
   padding: 10px 14px;
   border-radius: 999px;
-  color: #6f584b;
+  border: 1px solid transparent;
+  color: #7b5b46;
   font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .navLink:hover {
-  background: #fff3e8;
+  background: #fff0df;
+  border-color: #e7c9aa;
   color: #2b1b11;
+  transform: translateY(-1px);
 }
 
 .content {
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: 40px 24px 72px;
+  padding: 44px 24px 84px;
 }
 
 .footer {
-  border-top: 1px solid #f0d7c7;
+  border-top: 1px solid #e7c9aa;
 }
 
 .footerInner {
@@ -82,7 +98,7 @@
   margin: 0 auto;
   padding: 24px;
   font-size: 14px;
-  color: #6f584b;
+  color: #7b5b46;
 }
 
 @media (max-width: 760px) {

@@ -44,11 +44,11 @@ export default async function ConfiguratorPage() {
     <div className={styles.page}>
       <section className={styles.hero}>
         <span className={styles.eyebrow}>Configurator</span>
-        <h1>Customize your Hyggefis one feature at a time.</h1>
+        <h1>Customize your Hyggefis like a signature CookieCorner recipe.</h1>
         <p>
-          The configurator is now a wizard that walks through product, size,
-          color, and gift-wrap choices before adding the configured item to the
-          cart.
+          The configurator now feels like a cookie workshop: choose the shape,
+          color, and final wrapping one step at a time before sending the custom
+          creation to your cart.
         </p>
       </section>
 
