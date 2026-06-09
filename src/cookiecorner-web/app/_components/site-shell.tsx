@@ -2,9 +2,7 @@ import Link from "next/link";
 import styles from "./site-shell.module.css";
 
 const navigationItems = [
-  { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
-  { href: "/configurator", label: "Configurator" },
+  { href: "/configurator", label: "Cookie Lab" },
   { href: "/cart", label: "Cart" },
   { href: "/checkout", label: "Checkout" },
 ];
@@ -15,11 +13,11 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div className={styles.brand}>
-            <Link className={styles.brandName} href="/">
+            <Link className={styles.brandName} href="/configurator">
               CookieCorner
             </Link>
             <span className={styles.brandTagline}>
-              Local storefront starter for the Hyggefis launch
+              Whisk, sprinkle, and launch your custom Hyggefis
             </span>
           </div>
 
@@ -37,8 +35,8 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
 
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <span>CookieCorner MVP scaffold</span>
-          <span>Next.js 16 + ASP.NET 10 + Docker Compose</span>
+          <span>Cookie Lab customizer</span>
+          <span>Baked with Next.js 16, ASP.NET 10, and a lot of frosting energy</span>
         </div>
       </footer>
     </div>

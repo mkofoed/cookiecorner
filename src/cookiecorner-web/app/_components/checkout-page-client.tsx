@@ -102,7 +102,7 @@ export function CheckoutPageClient() {
           with status <strong>{submittedOrder.status}</strong>.
         </p>
         <p>Total amount: {submittedOrder.totalAmount.toFixed(2)}</p>
-        <Link href="/products">Continue shopping</Link>
+        <Link href="/configurator">Create another Hyggefis</Link>
       </section>
     );
   }
@@ -111,8 +111,8 @@ export function CheckoutPageClient() {
     return (
       <section className={styles.noticeCard}>
         <h2>No items ready for checkout</h2>
-        <p>Add products to your cart before placing an order.</p>
-        <Link href="/products">Browse products</Link>
+        <p>Add a custom Hyggefis to your cart before placing an order.</p>
+        <Link href="/configurator">Open customizer</Link>
       </section>
     );
   }

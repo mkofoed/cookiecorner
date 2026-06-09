@@ -42,16 +42,6 @@ export default async function ConfiguratorPage() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
-        <span className={styles.eyebrow}>Configurator</span>
-        <h1>Customize your Hyggefis like a signature CookieCorner recipe.</h1>
-        <p>
-          The configurator now feels like a cookie workshop: choose the shape,
-          color, and final wrapping one step at a time before sending the custom
-          creation to your cart.
-        </p>
-      </section>
-
       {error ? (
         <section className={styles.noticeCard}>
           <h2>Configurator is not available yet</h2>

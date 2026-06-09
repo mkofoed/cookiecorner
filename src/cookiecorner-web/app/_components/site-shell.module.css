@@ -1,8 +1,14 @@
 .site {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(255, 212, 168, 0.55), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(214, 165, 118, 0.28), transparent 26%);
+    radial-gradient(circle at 10% 8%, rgba(255, 226, 191, 0.92) 0 90px, transparent 91px),
+    radial-gradient(circle at 84% 12%, rgba(214, 165, 118, 0.36) 0 68px, transparent 69px),
+    radial-gradient(circle at 88% 84%, rgba(255, 210, 172, 0.5) 0 84px, transparent 85px),
+    repeating-linear-gradient(
+      -18deg,
+      rgba(255, 255, 255, 0.22) 0 18px,
+      rgba(255, 240, 221, 0.22) 18px 36px
+    );
   color: #2b1b11;
 }
 
@@ -11,9 +17,9 @@
   top: 0;
   z-index: 10;
   border-bottom: 1px solid #e3c4a4;
-  background: rgba(255, 248, 238, 0.88);
+  background: rgba(255, 245, 233, 0.82);
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 30px rgba(114, 69, 38, 0.08);
+  box-shadow: 0 14px 36px rgba(114, 69, 38, 0.12);
 }
 
 .headerInner {
@@ -31,23 +37,31 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 10px 16px;
-  border: 1px solid #e7c9aa;
-  border-radius: 24px;
-  background: linear-gradient(180deg, #fff8ee 0%, #fff1dd 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  position: relative;
+  padding: 14px 22px;
+  border: 2px solid #d8aa7d;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 22% 32%, rgba(126, 76, 44, 0.22) 0 5px, transparent 6px),
+    radial-gradient(circle at 48% 68%, rgba(126, 76, 44, 0.22) 0 6px, transparent 7px),
+    radial-gradient(circle at 74% 28%, rgba(126, 76, 44, 0.22) 0 4px, transparent 5px),
+    linear-gradient(180deg, #f4c993 0%, #e6ae70 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    0 16px 32px rgba(114, 69, 38, 0.18);
 }
 
 .brandName {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.04em;
-  color: #8f4a24;
+  color: #5c2e15;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .brandTagline {
   font-size: 13px;
-  color: #7f6553;
+  color: #6c4127;
 }
 
 .nav {
@@ -58,12 +72,14 @@
 }
 
 .navLink {
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-radius: 999px;
-  border: 1px solid transparent;
-  color: #7b5b46;
+  border: 1px solid #ebc5a3;
+  color: #7b4b2e;
   font-size: 14px;
   font-weight: 600;
+  background: linear-gradient(180deg, #fff7ee 0%, #ffe8d0 100%);
+  box-shadow: 0 8px 18px rgba(114, 69, 38, 0.08);
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
@@ -72,8 +88,8 @@
 }
 
 .navLink:hover {
-  background: #fff0df;
-  border-color: #e7c9aa;
+  background: linear-gradient(180deg, #ffe3be 0%, #ffc88d 100%);
+  border-color: #dca16b;
   color: #2b1b11;
   transform: translateY(-1px);
 }
@@ -87,6 +103,7 @@
 
 .footer {
   border-top: 1px solid #e7c9aa;
+  background: rgba(255, 247, 236, 0.72);
 }
 
 .footerInner {

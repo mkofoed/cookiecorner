@@ -25,8 +25,8 @@ export function CartPageClient() {
     return (
       <section className={styles.noticeCard}>
         <h2>Your cart is empty</h2>
-        <p>Add a Hyggefis from the products page to begin checkout.</p>
-        <Link href="/products">Browse products</Link>
+        <p>Add a custom Hyggefis from the cookie lab to begin checkout.</p>
+        <Link href="/configurator">Open customizer</Link>
       </section>
     );
   }

@@ -6,10 +6,10 @@ export default function CartPage() {
     <div className={styles.page}>
       <section className={styles.hero}>
         <span className={styles.eyebrow}>Cart</span>
-        <h1>Initial cart page for selected Hyggefis products.</h1>
+        <h1>Your CookieCorner basket.</h1>
         <p>
-          This page is the first placeholder for cart state, quantities, price
-          totals, and checkout entry.
+          Review the custom Hyggefis creations from the cookie lab before sending
+          them to checkout.
         </p>
       </section>
 
