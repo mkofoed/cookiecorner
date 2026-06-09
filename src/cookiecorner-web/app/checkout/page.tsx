@@ -1,11 +1,5 @@
+import { CheckoutPageClient } from "../_components/checkout-page-client";
 import styles from "../_components/page-section.module.css";
-
-const checkoutSections = [
-  "Customer details",
-  "Delivery address",
-  "Payment",
-  "Order confirmation",
-];
 
 export default function CheckoutPage() {
   return (
@@ -19,14 +13,7 @@ export default function CheckoutPage() {
         </p>
       </section>
 
-      <section className={styles.grid}>
-        {checkoutSections.map((section) => (
-          <article key={section} className={styles.card}>
-            <h2>{section}</h2>
-            <p>Placeholder panel for the first implementation of this step.</p>
-          </article>
-        ))}
-      </section>
+      <CheckoutPageClient />
     </div>
   );
 }

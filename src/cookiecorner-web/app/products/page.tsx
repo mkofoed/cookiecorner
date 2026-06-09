@@ -1,17 +1,7 @@
 import { connection } from "next/server";
+import { AddToCartButton } from "../_components/add-to-cart-button";
 import styles from "../_components/page-section.module.css";
-
-type Product = {
-  id: number;
-  name: string;
-  description: string | null;
-  size: string | null;
-  color: string | null;
-  price: number;
-  stockQuantity: number;
-  isAvailable: boolean;
-  createdAt: string;
-};
+import { Product } from "../_components/storefront-types";
 
 type ProductResult =
   | { products: Product[]; error: null }
@@ -83,6 +73,7 @@ export default async function ProductsPage() {
                 <br />
                 Availability: {product.isAvailable ? "Available" : "Unavailable"}
               </p>
+              <AddToCartButton className={styles.primaryButton} product={product} />
             </article>
           ))}
         </section>

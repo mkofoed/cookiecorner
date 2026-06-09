@@ -1,6 +1,8 @@
 using CookieCorner.Api.Configuration;
 using CookieCorner.Api.Integrations.HyggeFrame;
+using CookieCorner.Api.Services.Orders;
 using CookieCorner.Api.Services.Products;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +12,13 @@ builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, relo
 builder.Services.Configure<HyggeFrameOptions>(
     builder.Configuration.GetSection(HyggeFrameOptions.SectionName));
 builder.Services.AddHttpClient<IHyggeFrameApiClient, HyggeFrameApiClient>();
+builder.Services.AddScoped<IOrderCheckoutService, OrderCheckoutService>();
 builder.Services.AddScoped<IProductCatalogService, ProductCatalogService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

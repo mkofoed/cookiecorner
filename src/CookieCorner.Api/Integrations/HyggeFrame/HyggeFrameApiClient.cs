@@ -49,6 +49,29 @@ public sealed class HyggeFrameApiClient(
             cancellationToken);
     }
 
+    public async Task<HyggeFrameOrderDto> CreateOrderAsync(
+        HyggeFrameCreateOrderRequest orderRequest,
+        CancellationToken cancellationToken)
+    {
+        ApplyBaseAddress();
+
+        using var response = await httpClient.PostAsJsonAsync(
+            "api/orders",
+            orderRequest,
+            JsonSerializerOptions,
+            cancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var order = await JsonSerializer.DeserializeAsync<HyggeFrameOrderDto>(
+            stream,
+            JsonSerializerOptions,
+            cancellationToken);
+
+        return order ?? throw new InvalidOperationException("HyggeFrame returned an empty order payload.");
+    }
+
     public void ConfigureBaseAddress()
     {
         if (string.IsNullOrWhiteSpace(options.BaseUrl))
@@ -90,11 +113,26 @@ public sealed class HyggeFrameApiClient(
             throw new InvalidOperationException("HyggeFrame:ApiKey is not configured.");
         }
 
+        ApplyBaseAddress();
+
+        request.Headers.Add("X-Api-Key", options.ApiKey);
+    }
+
+    private void ApplyBaseAddress()
+    {
+        if (string.IsNullOrWhiteSpace(options.ApiKey))
+        {
+            throw new InvalidOperationException("HyggeFrame:ApiKey is not configured.");
+        }
+
         if (httpClient.BaseAddress is null)
         {
             ConfigureBaseAddress();
         }
 
-        request.Headers.Add("X-Api-Key", options.ApiKey);
+        if (!httpClient.DefaultRequestHeaders.Contains("X-Api-Key"))
+        {
+            httpClient.DefaultRequestHeaders.Add("X-Api-Key", options.ApiKey);
+        }
     }
 }

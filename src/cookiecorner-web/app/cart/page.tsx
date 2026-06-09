@@ -1,3 +1,4 @@
+import { CartPageClient } from "../_components/cart-page-client";
 import styles from "../_components/page-section.module.css";
 
 export default function CartPage() {
@@ -12,20 +13,7 @@ export default function CartPage() {
         </p>
       </section>
 
-      <section className={styles.grid}>
-        <article className={styles.card}>
-          <h2>Cart items</h2>
-          <p>No persisted cart yet. This will later show chosen configurations.</p>
-        </article>
-        <article className={styles.card}>
-          <h2>Order summary</h2>
-          <p>Subtotal, shipping, and promotions will live here.</p>
-        </article>
-        <article className={styles.card}>
-          <h2>Next action</h2>
-          <p>Continue to checkout once the cart API and state management exist.</p>
-        </article>
-      </section>
+      <CartPageClient />
     </div>
   );
 }
