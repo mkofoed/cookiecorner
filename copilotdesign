@@ -1,0 +1,180 @@
+ 1. Solution approach
+
+  Build one e-commerce solution for CookieCorner with:
+
+   - online sales of Hyggefis
+   - Hyggefis configuration/customization
+   - standard e-commerce capabilities
+   - integration into HyggeFrame
+
+  This keeps the design focused on the assigned country while still using patterns that can scale later if needed.
+
+  2. Scope
+
+  In scope
+
+   - CookieCorner storefront
+   - product catalog
+   - Hyggefis configurator
+   - cart and checkout
+   - customer data and order flow
+   - admin/product management
+   - integration into HyggeFrame
+
+  Out of scope
+
+   - Alfeland and Bamsebugten
+   - cross-country rollout coordination
+   - shared multi-country release management
+
+  3. High-level architecture
+
+   HyggeFrame
+    └─ CookieCorner Storefront
+       ├─ Product listing
+       ├─ Product details
+       ├─ Hyggefis configurator
+       ├─ Cart
+       ├─ Checkout
+       └─ Customer account / order lookup
+   
+   Commerce Backend
+    ├─ Product Catalog
+    ├─ Configuration Engine
+    ├─ Pricing
+    ├─ Cart
+    ├─ Order Management
+    ├─ Customer Management
+    └─ CookieCorner Store Configuration
+   
+   Integrations
+    ├─ Payment provider
+    ├─ Shipping provider
+    ├─ Email/notifications
+    └─ Analytics / monitoring
+
+  4. CookieCorner-specific design
+
+  Use a CookieCorner store configuration object to drive:
+
+   - language/content for CookieCorner
+   - currency and pricing
+   - shipping methods
+   - payment methods
+   - tax rules
+   - available Hyggefis options
+   - promotions and campaign content
+
+  This gives a clean separation between the generic commerce engine and CookieCorner-specific business setup.
+
+  5. Functional capabilities
+
+  Customer-facing
+
+   1. Browse Hyggefis products
+   2. Configure a Hyggefis
+   3. Add to cart
+   4. Complete checkout
+   5. Receive order confirmation
+   6. View order status / history if customer accounts are included
+
+  Admin-facing
+
+   1. Create and update products
+   2. Manage stock
+   3. Configure available options for Hyggefis
+   4. Manage orders and order statuses
+   5. Configure CookieCorner storefront settings
+
+  6. Domain model
+
+  Core entities:
+
+   - Product
+   - ProductOption
+   - ProductConfiguration
+   - Cart
+   - CartItem
+   - Customer
+   - Order
+   - OrderItem
+   - StoreConfig
+   - ShippingOption
+   - PaymentMethod
+
+  For the configurator, model choices as structured selections, for example:
+
+   {
+     "productId": 123,
+     "selectedOptions": {
+       "size": "Large",
+       "color": "Blue",
+       "giftWrap": true
+     }
+   }
+
+  7. API direction
+
+  Your current API already has good foundations in:
+
+   - Products
+   - Orders
+   - Customers
+   - Admin / API keys
+
+  Main additions recommended:
+
+   - Cart API
+   - Configurator API
+   - Checkout API
+   - Store configuration API for CookieCorner
+
+  Example additions:
+
+   - GET /api/cart
+   - POST /api/cart/items
+   - POST /api/products/{id}/validate-configuration
+   - POST /api/checkout/complete
+   - GET /api/store-config
+
+  8. Non-functional design
+
+  User experience
+
+   - simple product discovery
+   - clear step-by-step configurator
+   - fast checkout
+   - responsive/mobile-first UI
+   - immediate validation and pricing feedback
+
+  Vendor responsibility / stakeholder clarity
+
+   - short weekly demos
+   - visible backlog and milestones
+   - early prototype for feedback
+   - decision log for scope and tradeoffs
+
+  HyggeFrame integration
+
+   - shared authentication/session approach if applicable
+   - consistent UI patterns
+   - common navigation and branding
+   - reuse of existing platform services where possible
+
+  9. Recommended MVP
+
+  For launch, include:
+
+   - product catalog
+   - product details
+   - Hyggefis configurator
+   - cart
+   - checkout
+   - payment integration
+   - order creation and status handling
+   - admin for products and orders
+   - CookieCorner store configuration
+
+  Key design decision: build a single-country CookieCorner commerce module inside HyggeFrame, with CookieCorner-specific behavior handled through configuration and dedicated integrations.
+
+  If needed, I can turn this into a more formal solution design document with sections like context, architecture, domain model, APIs, and MVP scope.
