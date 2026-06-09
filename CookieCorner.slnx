@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CookieCorner.Api/CookieCorner.Api.csproj" />
+  </Folder>
+</Solution>

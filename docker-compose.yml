@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: ./src/CookieCorner.Api
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/CookieCorner.Api/appsettings.Local.json:/app/appsettings.Local.json:ro
+
+  web:
+    build:
+      context: ./src/cookiecorner-web
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    environment:
+      API_BASE_URL: http://api:8080
+    ports:
+      - "3000:3000"

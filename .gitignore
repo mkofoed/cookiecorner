@@ -1,0 +1,5 @@
+/.idea/
+/docker-compose.override.yml
+src/CookieCorner.Api/appsettings.Local.json
+src/CookieCorner.Api/bin/
+src/CookieCorner.Api/obj/
