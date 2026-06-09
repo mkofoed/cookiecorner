@@ -81,6 +81,7 @@
 
 .productMascot {
   --hoodie-color: #213a63;
+  --hoodie-shadow: #162748;
   position: relative;
   width: 470px;
   height: 560px;
@@ -174,7 +175,7 @@
   height: 270px;
   transform: translateX(-50%);
   border-radius: 34% 34% 24% 24%;
-  background: linear-gradient(180deg, var(--hoodie-color) 0%, #162748 100%);
+  background: linear-gradient(180deg, var(--hoodie-color) 0%, var(--hoodie-shadow) 100%);
   box-shadow: inset 0 -12px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -237,14 +238,15 @@
 
 .thumbnailMascot {
   --hoodie-color: #213a63;
+  --hoodie-shadow: #162748;
   width: 110px;
   height: 110px;
-  border-radius: 28px;
+  border-radius: 34px;
   background:
     radial-gradient(circle at 50% 26%, #d59d65 0 26px, transparent 27px),
     radial-gradient(circle at 34% 18%, #d59d65 0 14px, transparent 15px),
     radial-gradient(circle at 66% 18%, #d59d65 0 14px, transparent 15px),
-    linear-gradient(180deg, transparent 0 38%, var(--hoodie-color) 38% 100%);
+    linear-gradient(180deg, transparent 0 38%, var(--hoodie-color) 38%, var(--hoodie-shadow) 100%);
 }
 
 .productSidebar {
@@ -301,16 +303,22 @@
 .selectorSquare,
 .colorSwatch,
 .selectorWide {
-  border: 1px solid #d9b38e;
+  border: 2px solid #d9b38e;
   background: #fffaf4;
   color: #6c4127;
   font: inherit;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .selectorSquare {
   width: 66px;
   height: 66px;
+  border-radius: 24px;
   font-size: 20px;
   font-weight: 700;
 }
@@ -322,13 +330,13 @@
 }
 
 .colorSwatch {
-  width: 66px;
-  height: 66px;
+  width: 72px;
+  height: 72px;
+  border-radius: 28px;
   border-color: var(--swatch-color);
-  color: #6c4127;
+  color: transparent;
   background: #fffaf4;
-  font-size: 22px;
-  font-weight: 700;
+  box-shadow: inset 0 0 0 6px rgba(255, 250, 244, 0.95);
 }
 
 .colorSwatchActive {
@@ -337,10 +345,23 @@
   box-shadow: 0 10px 22px rgba(94, 55, 27, 0.16);
 }
 
+.colorSwatchLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .selectorWide {
   min-width: 140px;
   padding: 0 18px;
   height: 66px;
+  border-radius: 24px;
   font-size: 16px;
   font-weight: 600;
 }
@@ -348,6 +369,12 @@
 .selectorWideActive {
   border-color: #d79a62;
   background: linear-gradient(180deg, #fff0df 0%, #ffe4c0 100%);
+}
+
+.selectorSquare:hover,
+.colorSwatch:hover,
+.selectorWide:hover {
+  transform: translateY(-1px);
 }
 
 .purchaseRow {
