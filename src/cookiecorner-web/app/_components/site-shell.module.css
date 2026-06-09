@@ -63,6 +63,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid #ebc5a3;
@@ -81,6 +82,14 @@
 .navIcon {
   font-size: 18px;
   line-height: 1;
+}
+
+.navCount {
+  min-width: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
 }
 
 .navLink:hover {

@@ -1,11 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BasketNavLink } from "./basket-nav-link";
 import { CookieConsentBanner } from "./cookie-consent-banner";
 import styles from "./site-shell.module.css";
-
-const navigationItems = [
-  { href: "/checkout", label: "Basket", icon: "🧺" },
-];
 
 export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -26,19 +23,7 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
           </div>
 
           <nav className={styles.nav} aria-label="Primary">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.href}
-                aria-label={item.label}
-                className={styles.navLink}
-                href={item.href}
-                title={item.label}
-              >
-                <span aria-hidden="true" className={styles.navIcon}>
-                  {item.icon}
-                </span>
-              </Link>
-            ))}
+            <BasketNavLink />
           </nav>
         </div>
       </header>

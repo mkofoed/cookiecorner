@@ -527,6 +527,12 @@
   color: #6f584b;
 }
 
+.noticeCard .secondaryButton,
+.noticeCard .primaryButton {
+  width: fit-content;
+  margin-top: 12px;
+}
+
 .primaryButton,
 .secondaryButton {
   padding: 12px 20px;
