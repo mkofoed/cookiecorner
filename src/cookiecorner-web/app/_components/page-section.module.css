@@ -529,6 +529,9 @@
 
 .noticeCard .secondaryButton,
 .noticeCard .primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: fit-content;
   margin-top: 12px;
 }
