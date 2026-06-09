@@ -207,7 +207,15 @@
   border: 1px solid #dcbca8;
   border-radius: 16px;
   font: inherit;
+  color: #2b1b11;
   background: #fffdf9;
+  caret-color: #2b1b11;
+}
+
+.textInput::placeholder,
+.textArea::placeholder,
+.numberInput::placeholder {
+  color: #8a7366;
 }
 
 .numberInput {
