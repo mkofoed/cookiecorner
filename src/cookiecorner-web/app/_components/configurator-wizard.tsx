@@ -108,8 +108,6 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   return (
     <section className={styles.productLayout}>
       <section className={styles.productVisualPanel}>
-        <div className={styles.collectionBadge}>CookieCorner Collection</div>
-
         <div className={styles.productHeader}>
           <div>
             <p className={styles.collectionLabel}>Hyggefis collection</p>
