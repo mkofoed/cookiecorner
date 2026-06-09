@@ -3,7 +3,6 @@ import Link from "next/link";
 import { BasketNavLink } from "./basket-nav-link";
 import { CookieConsentBanner } from "./cookie-consent-banner";
 import styles from "./site-shell.module.css";
-
 export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className={styles.site}>
@@ -23,6 +22,9 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
           </div>
 
           <nav className={styles.nav} aria-label="Primary">
+            <Link className={styles.navLink} href="/insights">
+              Insights
+            </Link>
             <BasketNavLink />
           </nav>
         </div>
