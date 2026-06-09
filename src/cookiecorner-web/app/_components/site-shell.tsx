@@ -4,6 +4,7 @@ import styles from "./site-shell.module.css";
 const navigationItems = [
   { href: "/configurator", label: "Cookie Lab" },
   { href: "/orders", label: "Orders" },
+  { href: "/insights", label: "Insights" },
   { href: "/cart", label: "Cart" },
   { href: "/checkout", label: "Checkout" },
 ];
