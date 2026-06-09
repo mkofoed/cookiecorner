@@ -577,6 +577,13 @@
   box-shadow: 0 20px 46px rgba(90, 53, 27, 0.1);
 }
 
+.checkoutBasketHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
 .lineItem {
   display: flex;
   justify-content: space-between;
@@ -614,6 +621,18 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+}
+
+.checkoutForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkoutFormActions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
 }
 
 .textInput,
@@ -879,6 +898,11 @@
   }
 
   .lineItemActions {
+    align-items: flex-start;
+  }
+
+  .checkoutBasketHeader {
+    flex-direction: column;
     align-items: flex-start;
   }
 }

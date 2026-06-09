@@ -1,8 +1,8 @@
-const dkkFormatter = new Intl.NumberFormat("da-DK", {
-  style: "currency",
-  currency: "DKK",
+const fictionalCurrencyFormatter = new Intl.NumberFormat("da-DK", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 });
 
 export function formatDkk(value: number) {
-  return dkkFormatter.format(value);
+  return `${fictionalCurrencyFormatter.format(value)} Đ`;
 }

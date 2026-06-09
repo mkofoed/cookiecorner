@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CookieCorner",
-  description: "CookieCorner local storefront for the Hyggefis launch.",
+  title: "HyggeTech Collection",
+  description: "HyggeTech Collection storefront for the Hyggefis launch.",
   icons: {
     icon: "/images/header/brand-icon.png",
     shortcut: "/images/header/brand-icon.png",

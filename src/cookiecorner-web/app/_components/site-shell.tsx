@@ -4,7 +4,7 @@ import { CookieConsentBanner } from "./cookie-consent-banner";
 import styles from "./site-shell.module.css";
 
 const navigationItems = [
-  { href: "/checkout", label: "Checkout" },
+  { href: "/checkout", label: "Basket", icon: "🧺" },
 ];
 
 export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -17,18 +17,26 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
               <Image
                 alt=""
                 className={styles.brandIcon}
-                height={80}
+                height={56}
                 priority
                 src="/images/header/brand-icon.png"
-                width={80}
+                width={56}
               />
             </Link>
           </div>
 
           <nav className={styles.nav} aria-label="Primary">
             {navigationItems.map((item) => (
-              <Link key={item.href} className={styles.navLink} href={item.href}>
-                {item.label}
+              <Link
+                key={item.href}
+                aria-label={item.label}
+                className={styles.navLink}
+                href={item.href}
+                title={item.label}
+              >
+                <span aria-hidden="true" className={styles.navIcon}>
+                  {item.icon}
+                </span>
               </Link>
             ))}
           </nav>
@@ -37,13 +45,6 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
 
       <main className={styles.content}>{children}</main>
       <CookieConsentBanner />
-
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <span>Cookie Lab customizer</span>
-          <span>Baked with Next.js 16, ASP.NET 10, and a lot of frosting energy</span>
-        </div>
-      </footer>
     </div>
   );
 }

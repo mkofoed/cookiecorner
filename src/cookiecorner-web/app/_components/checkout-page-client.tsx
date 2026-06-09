@@ -119,7 +119,9 @@ export function CheckoutPageClient() {
       <section className={styles.noticeCard}>
         <h2>No items ready for checkout</h2>
         <p>Add a custom Hyggefis to your cart before placing an order.</p>
-        <Link href="/configurator">Open customizer</Link>
+        <Link className={styles.secondaryButton} href="/configurator">
+          Open customizer
+        </Link>
       </section>
     );
   }
@@ -128,7 +130,12 @@ export function CheckoutPageClient() {
     <div className={styles.twoColumn}>
       <div className={styles.formPanel}>
         <section className={styles.listPanel}>
-          <h2>Basket</h2>
+          <div className={styles.checkoutBasketHeader}>
+            <h2>Basket</h2>
+            <Link className={styles.secondaryButton} href="/configurator">
+              Keep shopping
+            </Link>
+          </div>
           {items.map((item) => (
             <article key={item.cartItemId} className={styles.lineItem}>
               <div>
@@ -173,7 +180,7 @@ export function CheckoutPageClient() {
           ))}
         </section>
 
-        <form onSubmit={handleSubmit}>
+        <form className={styles.checkoutForm} onSubmit={handleSubmit}>
           <div className={styles.formGrid}>
             <label className={styles.fieldLabel}>
               Name
@@ -235,11 +242,13 @@ export function CheckoutPageClient() {
             </label>
           </div>
 
-          {error ? <p className={styles.errorText}>{error}</p> : null}
+          <div className={styles.checkoutFormActions}>
+            {error ? <p className={styles.errorText}>{error}</p> : null}
 
-          <button className={styles.primaryButton} disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Placing order..." : "Place order"}
-          </button>
+            <button className={styles.primaryButton} disabled={isSubmitting} type="submit">
+              {isSubmitting ? "Placing order..." : "Place order"}
+            </button>
+          </div>
         </form>
       </div>
 
