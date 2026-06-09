@@ -104,6 +104,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   const accentColor = selectedColorOption.swatch;
   const accentShadow = shadeHex(accentColor, -18);
   const accentTextColor = selectedColorOption.textColor;
+  const bearScale = getBearScale(selectedSize);
 
   return (
     <section className={styles.productLayout}>
@@ -122,6 +123,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
           <div
             className={styles.productMascot}
             style={{
+              ["--bear-scale" as string]: bearScale.toString(),
               ["--hoodie-color" as string]: accentColor,
               ["--hoodie-shadow" as string]: accentShadow,
             }}
@@ -320,5 +322,22 @@ function getSizeLabel(size: string) {
       return "XL";
     default:
       return size.slice(0, 4).toUpperCase();
+  }
+}
+
+function getBearScale(size: string) {
+  switch (size.toLowerCase()) {
+    case "mini":
+      return 0.72;
+    case "small":
+      return 0.86;
+    case "medium":
+      return 1;
+    case "large":
+      return 1.12;
+    case "giant":
+      return 1.24;
+    default:
+      return 1;
   }
 }

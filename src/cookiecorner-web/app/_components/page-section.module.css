@@ -61,11 +61,15 @@
 }
 
 .productMascot {
+  --bear-scale: 1;
   --hoodie-color: #213a63;
   --hoodie-shadow: #162748;
   position: relative;
   width: 470px;
   height: 560px;
+  transform: scale(var(--bear-scale));
+  transform-origin: center bottom;
+  transition: transform 0.25s ease;
 }
 
 .productMascotEarLeft,
