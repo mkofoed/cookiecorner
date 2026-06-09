@@ -76,8 +76,8 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   const [isAdded, setIsAdded] = useState(false);
 
   const checkoutReferenceProduct = useMemo(
-    () => products.find((product) => product.isAvailable) ?? products[0] ?? null,
-    [products],
+    () => getCheckoutReferenceProduct(products, selectedSize),
+    [products, selectedSize],
   );
 
   const selectedColorOption =
@@ -91,6 +91,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
     addConfiguredToCart(checkoutReferenceProduct, {
       color: selectedColorOption.label,
       giftWrap,
+      price: checkoutReferenceProduct.price,
       quantity,
       size: selectedSize,
     });
@@ -340,4 +341,25 @@ function getBearScale(size: string) {
     default:
       return 1;
   }
+}
+
+function getCheckoutReferenceProduct(products: Product[], selectedSize: string) {
+  const availableProducts = products.filter((product) => product.isAvailable);
+  const sizeMatches = availableProducts.filter(
+    (product) => product.size?.toLowerCase() === selectedSize.toLowerCase(),
+  );
+
+  if (sizeMatches.length > 0) {
+    return sizeMatches.reduce((lowestPriceProduct, currentProduct) =>
+      currentProduct.price < lowestPriceProduct.price ? currentProduct : lowestPriceProduct,
+    );
+  }
+
+  if (availableProducts.length > 0) {
+    return availableProducts.reduce((lowestPriceProduct, currentProduct) =>
+      currentProduct.price < lowestPriceProduct.price ? currentProduct : lowestPriceProduct,
+    );
+  }
+
+  return products[0] ?? null;
 }

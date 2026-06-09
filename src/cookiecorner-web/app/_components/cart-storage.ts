@@ -71,6 +71,7 @@ export function addToCart(product: Product) {
 type ConfiguredCartOptions = {
   color: string;
   giftWrap: boolean;
+  price: number;
   quantity: number;
   size: string;
 };
@@ -82,7 +83,7 @@ export function addConfiguredToCart(product: Product, options: ConfiguredCartOpt
     cartItemId: `${product.id}-${crypto.randomUUID()}`,
     productId: product.id,
     name: "Custom Hyggefis",
-    price: product.price,
+    price: options.price,
     quantity: options.quantity,
     size: options.size,
     color: options.color,
