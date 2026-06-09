@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { addConfiguredToCart } from "./cart-storage";
+import { formatDkk } from "./currency";
 import styles from "./page-section.module.css";
 import { Product } from "./storefront-types";
 
@@ -10,6 +11,8 @@ const wrapOptions = [
   { label: "No gift wrap", value: false },
   { label: "Add gift wrap", value: true },
 ];
+
+const sizeOptions = ["Mini", "Small", "Medium", "Large", "Giant"];
 
 type ConfiguratorWizardProps = {
   products: Product[];
@@ -29,63 +32,63 @@ const defaultColorOption: ColorOption = {
   textColor: "#ffffff",
 };
 
+const customColorOptions: ColorOption[] = [
+  defaultColorOption,
+  {
+    key: "blue",
+    label: "Blue",
+    swatch: "#213a63",
+    textColor: "#ffffff",
+  },
+  {
+    key: "cream",
+    label: "Cream",
+    swatch: "#f2deb9",
+    textColor: "#6b3a1e",
+  },
+  {
+    key: "pink",
+    label: "Pink",
+    swatch: "#ff5aa5",
+    textColor: "#ffffff",
+  },
+  {
+    key: "green",
+    label: "Green",
+    swatch: "#5e9d60",
+    textColor: "#ffffff",
+  },
+  {
+    key: "yellow",
+    label: "Yellow",
+    swatch: "#f2c230",
+    textColor: "#6b3a1e",
+  },
+];
+
 export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
-  const sizeOptions = useMemo(
-    () =>
-      Array.from(
-        new Set(products.map((product) => product.size).filter(Boolean)),
-      ) as string[],
-    [products],
-  );
-  const colorOptions = useMemo(
-    () => {
-      const options = new Map<string, ColorOption>();
-
-      for (const product of products) {
-        const option = resolveColorOption(product.color);
-        options.set(option.key, option);
-      }
-
-      return Array.from(options.values());
-    },
-    [products],
-  );
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0] ?? "Medium");
   const [selectedColorKey, setSelectedColorKey] = useState(
-    colorOptions[0]?.key ?? defaultColorOption.key,
+    customColorOptions[0]?.key ?? defaultColorOption.key,
   );
   const [giftWrap, setGiftWrap] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
 
-  const selectedProduct = useMemo(() => {
-    const availableProducts = products.filter((product) => product.isAvailable);
-    const exactMatch = availableProducts.find(
-      (product) =>
-        product.size?.toLowerCase() === selectedSize.toLowerCase() &&
-        normalizeColorKey(product.color) === selectedColorKey,
-    );
-
-    if (exactMatch) {
-      return exactMatch;
-    }
-
-    const sizeMatch = availableProducts.find(
-      (product) => product.size?.toLowerCase() === selectedSize.toLowerCase(),
-    );
-
-    return sizeMatch ?? availableProducts[0] ?? null;
-  }, [products, selectedColorKey, selectedSize]);
+  const checkoutReferenceProduct = useMemo(
+    () => products.find((product) => product.isAvailable) ?? products[0] ?? null,
+    [products],
+  );
 
   const selectedColorOption =
-    colorOptions.find((option) => option.key === selectedColorKey) ?? defaultColorOption;
+    customColorOptions.find((option) => option.key === selectedColorKey) ?? defaultColorOption;
 
   function addConfiguredProduct() {
-    if (!selectedProduct) {
+    if (!checkoutReferenceProduct) {
       return;
     }
 
-    addConfiguredToCart(selectedProduct, {
+    addConfiguredToCart(checkoutReferenceProduct, {
       color: selectedColorOption.label,
       giftWrap,
       quantity,
@@ -96,9 +99,8 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   }
 
   const productDescription =
-    selectedProduct?.description ??
-    "Hyggefis is built for warm hugs, playful comfort, and a big bakery-window smile.";
-  const previewCards = colorOptions.slice(0, 3);
+    "This custom CookieCorner Hyggefis is configured entirely from your own choices instead of matching an existing catalog model.";
+  const previewCards = customColorOptions;
   const accentColor = selectedColorOption.swatch;
   const accentShadow = shadeHex(accentColor, -18);
   const accentTextColor = selectedColorOption.textColor;
@@ -112,7 +114,9 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
           <div>
             <p className={styles.collectionLabel}>Hyggefis collection</p>
             <h1 className={styles.productTitle}>HYGGEBEAR</h1>
-            <p className={styles.productPrice}>D{selectedProduct?.price.toFixed(2) ?? "45.00"}</p>
+            <p className={styles.productPrice}>
+              {formatDkk(checkoutReferenceProduct?.price ?? 45)}
+            </p>
           </div>
         </div>
 
@@ -209,7 +213,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
         <section className={styles.sidebarSection}>
           <h2>Color</h2>
           <div className={styles.selectorRow}>
-            {colorOptions.map((colorOption) => (
+          {customColorOptions.map((colorOption) => (
               <button
                 key={colorOption.key}
                 aria-label={colorOption.label}
@@ -282,7 +286,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
           <p>Selected size: {selectedSize}</p>
           <p>Selected color: {selectedColorOption.label}</p>
           <p>Gift wrap: {giftWrap ? "Yes" : "No"}</p>
-          <p>Fulfilment item: {selectedProduct?.name ?? "Not available"}</p>
+          <p>Configuration type: Custom-built Hyggefis</p>
           {isAdded ? (
             <p className={styles.successText}>
               Freshly added. <Link href="/cart">Open cart</Link>
@@ -292,93 +296,6 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
       </aside>
     </section>
   );
-}
-
-function resolveColorOption(color: string | null) {
-  const normalizedColor = normalizeColorKey(color);
-
-  switch (normalizedColor) {
-    case "blue":
-      return {
-        key: "blue",
-        label: "Blue",
-        swatch: "#213a63",
-        textColor: "#ffffff",
-      };
-    case "brown":
-      return {
-        key: "brown",
-        label: "Brown",
-        swatch: "#7a4a2f",
-        textColor: "#ffffff",
-      };
-    case "cream":
-      return {
-        key: "cream",
-        label: "Cream",
-        swatch: "#f2deb9",
-        textColor: "#6b3a1e",
-      };
-    case "pink":
-      return {
-        key: "pink",
-        label: "Pink",
-        swatch: "#ff5aa5",
-        textColor: "#ffffff",
-      };
-    case "green":
-      return {
-        key: "green",
-        label: "Green",
-        swatch: "#5e9d60",
-        textColor: "#ffffff",
-      };
-    case "yellow":
-      return {
-        key: "yellow",
-        label: "Yellow",
-        swatch: "#f2c230",
-        textColor: "#6b3a1e",
-      };
-    default:
-      return defaultColorOption;
-  }
-}
-
-function normalizeColorKey(color: string | null) {
-  const normalized = normalizeValue(color);
-
-  switch (normalized) {
-    case "bla":
-    case "blue":
-      return "blue";
-    case "brown":
-    case "brun":
-      return "brown";
-    case "cream":
-    case "creme":
-      return "cream";
-    case "green":
-    case "gron":
-      return "green";
-    case "gul":
-    case "yellow":
-      return "yellow";
-    case "pink":
-    case "rose":
-    case "rosa":
-      return "pink";
-    default:
-      return normalized || defaultColorOption.key;
-  }
-}
-
-function normalizeValue(value: string | null) {
-  return (value ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toLowerCase();
 }
 
 function shadeHex(hex: string, adjustment: number) {

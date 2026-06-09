@@ -91,7 +91,6 @@ export function addConfiguredToCart(product: Product, options: ConfiguredCartOpt
       `Configured color: ${options.color}`,
       `Quantity: ${options.quantity}`,
       `Gift wrap: ${options.giftWrap ? "Yes" : "No"}`,
-      `Bakery fulfilment item: ${product.name}`,
     ],
   });
 

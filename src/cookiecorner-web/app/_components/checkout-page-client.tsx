@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { clearCart, getCartItems, subscribeToCartUpdates } from "./cart-storage";
+import { formatDkk } from "./currency";
 import { CartItem, Order } from "./storefront-types";
 import styles from "./page-section.module.css";
 
@@ -101,7 +102,10 @@ export function CheckoutPageClient() {
           Your order <strong>{submittedOrder.orderNumber}</strong> has been created
           with status <strong>{submittedOrder.status}</strong>.
         </p>
-        <p>Total amount: {submittedOrder.totalAmount.toFixed(2)}</p>
+        <p>Total amount: {formatDkk(submittedOrder.totalAmount)}</p>
+        <p>You can review previously placed orders and their statuses in the order history.</p>
+        <Link href="/orders">Open order history</Link>
+        <br />
         <Link href="/configurator">Create another Hyggefis</Link>
       </section>
     );
@@ -192,11 +196,11 @@ export function CheckoutPageClient() {
         <h2>Order summary</h2>
         {items.map((item) => (
           <p key={item.cartItemId}>
-            {item.name} x {item.quantity} — {(item.price * item.quantity).toFixed(2)}
+            {item.name} x {item.quantity} — {formatDkk(item.price * item.quantity)}
           </p>
         ))}
         <p>
-          <strong>Total: {totalAmount.toFixed(2)}</strong>
+          <strong>Total: {formatDkk(totalAmount)}</strong>
         </p>
       </aside>
     </div>

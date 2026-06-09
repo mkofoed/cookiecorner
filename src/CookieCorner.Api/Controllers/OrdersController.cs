@@ -6,8 +6,24 @@ namespace CookieCorner.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public sealed class OrdersController(IOrderCheckoutService orderCheckoutService) : ControllerBase
+public sealed class OrdersController(
+    IOrderCheckoutService orderCheckoutService,
+    IOrderHistoryStore orderHistoryStore) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetOrders(CancellationToken cancellationToken)
+    {
+        var orders = await orderHistoryStore.GetOrdersAsync(cancellationToken);
+        return Ok(orders);
+    }
+
+    [HttpGet("{orderNumber}")]
+    public async Task<IActionResult> GetOrder(string orderNumber, CancellationToken cancellationToken)
+    {
+        var order = await orderHistoryStore.GetOrderAsync(orderNumber, cancellationToken);
+        return order is null ? NotFound() : Ok(order);
+    }
+
     [HttpPost]
     public async Task<IActionResult> PlaceOrder(
         [FromBody] PlaceOrderRequest request,

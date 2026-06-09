@@ -3,6 +3,7 @@ using CookieCorner.Api.Integrations.HyggeFrame;
 using CookieCorner.Api.Services.Orders;
 using CookieCorner.Api.Services.Products;
 using System.Text.Json.Serialization;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,18 @@ builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, relo
 
 builder.Services.Configure<HyggeFrameOptions>(
     builder.Configuration.GetSection(HyggeFrameOptions.SectionName));
+builder.Services.Configure<RedisOptions>(
+    builder.Configuration.GetSection(RedisOptions.SectionName));
 builder.Services.AddHttpClient<IHyggeFrameApiClient, HyggeFrameApiClient>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+{
+    var connectionString =
+        builder.Configuration[$"{RedisOptions.SectionName}:ConnectionString"]
+        ?? "redis:6379,abortConnect=false";
+
+    return ConnectionMultiplexer.Connect(connectionString);
+});
+builder.Services.AddSingleton<IOrderHistoryStore, RedisOrderHistoryStore>();
 builder.Services.AddScoped<IOrderCheckoutService, OrderCheckoutService>();
 builder.Services.AddScoped<IProductCatalogService, ProductCatalogService>();
 builder.Services.AddControllers()

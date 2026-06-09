@@ -5,7 +5,9 @@ using CookieCorner.Api.Models.Storefront;
 
 namespace CookieCorner.Api.Services.Orders;
 
-public sealed class OrderCheckoutService(IHyggeFrameApiClient hyggeFrameApiClient) : IOrderCheckoutService
+public sealed class OrderCheckoutService(
+    IHyggeFrameApiClient hyggeFrameApiClient,
+    IOrderHistoryStore orderHistoryStore) : IOrderCheckoutService
 {
     public async Task<Order> PlaceOrderAsync(PlaceOrderRequest request, CancellationToken cancellationToken)
     {
@@ -28,7 +30,10 @@ public sealed class OrderCheckoutService(IHyggeFrameApiClient hyggeFrameApiClien
         };
 
         var order = await hyggeFrameApiClient.CreateOrderAsync(hyggeFrameRequest, cancellationToken);
-        return Map(order);
+        var mappedOrder = Map(order);
+        await orderHistoryStore.SaveAsync(mappedOrder, cancellationToken);
+
+        return mappedOrder;
     }
 
     private static Order Map(HyggeFrameOrderDto dto)
