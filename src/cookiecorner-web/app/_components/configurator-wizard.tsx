@@ -1,18 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { addConfiguredToCart } from "./cart-storage";
+import { useEffect, useMemo, useState } from "react";
+import { addConfiguredToCart, getCartItems, subscribeToCartUpdates } from "./cart-storage";
 import { formatDkk } from "./currency";
 import styles from "./page-section.module.css";
-import { Product } from "./storefront-types";
-
-const wrapOptions = [
-  { label: "No gift wrap", value: false },
-  { label: "Add gift wrap", value: true },
-];
+import { CartItem, Product } from "./storefront-types";
 
 const sizeOptions = ["Mini", "Small", "Medium", "Large", "Giant"];
+
+const teddyImageSrc = "/images/configurator/teddy-bear-source.png";
+const teddySweaterMaskSrc = "/images/configurator/teddy-bear-sweater-mask.png";
 
 type ConfiguratorWizardProps = {
   products: Product[];
@@ -69,42 +68,67 @@ const customColorOptions: ColorOption[] = [
 export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0] ?? "Medium");
   const [selectedColorKey, setSelectedColorKey] = useState(
-    customColorOptions[0]?.key ?? defaultColorOption.key,
+   customColorOptions[0]?.key ?? defaultColorOption.key,
   );
-  const [giftWrap, setGiftWrap] = useState(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [isAdded, setIsAdded] = useState(false);
-
-  const checkoutReferenceProduct = useMemo(
-    () => getCheckoutReferenceProduct(products, selectedSize),
-    [products, selectedSize],
-  );
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
   const selectedColorOption =
-    customColorOptions.find((option) => option.key === selectedColorKey) ?? defaultColorOption;
+   customColorOptions.find((option) => option.key === selectedColorKey) ?? defaultColorOption;
+  const { isExactColorMatch, product: selectedProduct } = useMemo(
+   () => getSelectedProduct(products, selectedSize, selectedColorOption.label),
+   [products, selectedColorOption.label, selectedSize],
+  );
+  const mostPopularSize = useMemo(() => getMostPopularSize(products), [products]);
+  const cartTotal = useMemo(
+   () => cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+   [cartItems],
+  );
+  const reservedQuantity = useMemo(
+   () => getReservedQuantityForProduct(cartItems, selectedProduct?.id ?? null),
+   [cartItems, selectedProduct?.id],
+  );
+  const remainingStock = selectedProduct && isExactColorMatch
+   ? Math.max(0, selectedProduct.stockQuantity - reservedQuantity)
+   : 0;
+  const effectiveQuantity = remainingStock > 0 ? Math.min(quantity, remainingStock) : 1;
+  const stockMessage = getStockMessage(
+   selectedProduct,
+   selectedSize,
+   selectedColorOption.label,
+   isExactColorMatch,
+   remainingStock,
+  );
+  const canAddToCart = Boolean(
+   isExactColorMatch && selectedProduct?.isAvailable && remainingStock > 0,
+  );
+
+  useEffect(() => {
+   const syncCart = () => setCartItems(getCartItems());
+
+   syncCart();
+   return subscribeToCartUpdates(syncCart);
+  }, []);
 
   function addConfiguredProduct() {
-    if (!checkoutReferenceProduct) {
-      return;
-    }
+   if (!selectedProduct || !canAddToCart) {
+     return;
+   }
 
-    addConfiguredToCart(checkoutReferenceProduct, {
-      color: selectedColorOption.label,
-      giftWrap,
-      price: checkoutReferenceProduct.price,
-      quantity,
-      size: selectedSize,
-    });
+   addConfiguredToCart(selectedProduct, {
+     color: selectedColorOption.label,
+     price: selectedProduct.price,
+     quantity: effectiveQuantity,
+     size: selectedSize,
+   });
 
-    setIsAdded(true);
+   setIsCartDrawerOpen(true);
   }
 
   const productDescription =
-    "This custom CookieCorner Hyggefis is configured entirely from your own choices instead of matching an existing catalog model.";
-  const previewCards = customColorOptions;
+   "Hyggefis are soft, cozy teddy bears made for gifting, collecting, and bringing a little extra hygge into everyday life.";
   const accentColor = selectedColorOption.swatch;
-  const accentShadow = shadeHex(accentColor, -18);
-  const accentTextColor = selectedColorOption.textColor;
   const bearScale = getBearScale(selectedSize);
 
   return (
@@ -113,9 +137,9 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
         <div className={styles.productHeader}>
           <div>
             <p className={styles.collectionLabel}>Hyggefis collection</p>
-            <h1 className={styles.productTitle}>HYGGEBEAR</h1>
+            <h1 className={styles.productTitle}>HYGGEFIS</h1>
             <p className={styles.productPrice}>
-              {formatDkk(checkoutReferenceProduct?.price ?? 45)}
+              {formatDkk(selectedProduct?.price ?? 45)}
             </p>
           </div>
         </div>
@@ -126,52 +150,10 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
             style={{
               ["--bear-scale" as string]: bearScale.toString(),
               ["--hoodie-color" as string]: accentColor,
-              ["--hoodie-shadow" as string]: accentShadow,
             }}
           >
-            <div className={styles.productMascotEarLeft} />
-            <div className={styles.productMascotEarRight} />
-            <div className={styles.productMascotHead}>
-              <div className={styles.productMascotFace}>
-                <div className={styles.productMascotEyes}>
-                  <span />
-                  <span />
-                </div>
-                <div className={styles.productMascotNose} />
-                <div className={styles.productMascotSmile} />
-              </div>
-            </div>
-            <div className={styles.productMascotBody}>
-              <span className={styles.productMascotWordmark} style={{ color: accentTextColor }}>
-                Hygge
-              </span>
-            </div>
+            <TeddyPreview alt="Configured Hyggefis preview" color={accentColor} priority />
           </div>
-        </div>
-
-        <div className={styles.thumbnailRow}>
-          {previewCards.map((colorOption) => (
-            <button
-              key={colorOption.key}
-              className={`${styles.thumbnailCard} ${
-                selectedColorKey === colorOption.key ? styles.thumbnailCardActive : ""
-              }`}
-              onClick={() => {
-                setSelectedColorKey(colorOption.key);
-                setIsAdded(false);
-              }}
-              type="button"
-            >
-              <div
-                className={styles.thumbnailMascot}
-                style={{
-                  ["--hoodie-color" as string]: colorOption.swatch,
-                  ["--hoodie-shadow" as string]: shadeHex(colorOption.swatch, -18),
-                }}
-              />
-              <span>{colorOption.label}</span>
-            </button>
-          ))}
         </div>
       </section>
 
@@ -180,8 +162,8 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
           <h2>Description</h2>
           <p>{productDescription}</p>
           <p>
-            Choose your favorite hoodie color and size, then let this little
-            bundle of coziness move straight into your cart.
+            Choose your favorite hoodie color and size, then add your Hyggefis to the
+            basket when the selected teddy is ready to ship.
           </p>
         </section>
 
@@ -194,13 +176,13 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
                 className={`${styles.selectorSquare} ${
                   selectedSize === size ? styles.selectorSquareActive : ""
                 }`}
-                onClick={() => {
-                  setSelectedSize(size);
-                  setIsAdded(false);
-                }}
+                onClick={() => setSelectedSize(size)}
                 type="button"
               >
-                {getSizeLabel(size)}
+                <span className={styles.selectorSquareLabel}>{getSizeLabel(size)}</span>
+                {mostPopularSize === size ? (
+                  <span className={styles.selectorBadge}>Most popular</span>
+                ) : null}
               </button>
             ))}
           </div>
@@ -209,7 +191,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
         <section className={styles.sidebarSection}>
           <h2>Color</h2>
           <div className={styles.selectorRow}>
-          {customColorOptions.map((colorOption) => (
+            {customColorOptions.map((colorOption) => (
               <button
                 key={colorOption.key}
                 aria-label={colorOption.label}
@@ -217,10 +199,7 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
                 className={`${styles.colorSwatch} ${
                   selectedColorKey === colorOption.key ? styles.colorSwatchActive : ""
                 }`}
-                onClick={() => {
-                  setSelectedColorKey(colorOption.key);
-                  setIsAdded(false);
-                }}
+                onClick={() => setSelectedColorKey(colorOption.key)}
                 style={{
                   ["--swatch-color" as string]: colorOption.swatch,
                   ["--swatch-text" as string]: colorOption.textColor,
@@ -233,82 +212,121 @@ export function ConfiguratorWizard({ products }: ConfiguratorWizardProps) {
           </div>
         </section>
 
-        <section className={styles.sidebarSection}>
-          <h2>Wrapping</h2>
-          <div className={styles.selectorRow}>
-            {wrapOptions.map((option) => (
-              <button
-                key={option.label}
-                className={`${styles.selectorWide} ${
-                  giftWrap === option.value ? styles.selectorWideActive : ""
-                }`}
-                onClick={() => {
-                  setGiftWrap(option.value);
-                  setIsAdded(false);
-                }}
-                type="button"
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </section>
-
         <section className={styles.purchaseRow}>
           <label className={styles.quantityPicker}>
             <span>Qty</span>
-            <select
+            <input
               className={styles.quantitySelect}
               onChange={(event) => {
-                setQuantity(Number(event.target.value));
-                setIsAdded(false);
+                const nextQuantity = Number(event.target.value);
+
+                if (Number.isFinite(nextQuantity) && nextQuantity >= 1) {
+                  setQuantity(Math.min(Math.floor(nextQuantity), Math.max(remainingStock, 1)));
+                }
               }}
-              value={quantity}
-            >
-              {[1, 2, 3, 4, 5].map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+              max={Math.max(remainingStock, 1)}
+              min={1}
+              step={1}
+              type="number"
+              value={effectiveQuantity}
+            />
           </label>
 
-          <button className={styles.ctaButton} onClick={addConfiguredProduct} type="button">
-            Add to basket
+          <button
+            aria-label="Add to basket"
+            className={styles.ctaButton}
+            disabled={!canAddToCart}
+            onClick={addConfiguredProduct}
+            title="Add to basket"
+            type="button"
+          >
+            +
           </button>
-        </section>
 
-        <section className={styles.recipeSummary}>
-          <p>Selected size: {selectedSize}</p>
-          <p>Selected color: {selectedColorOption.label}</p>
-          <p>Gift wrap: {giftWrap ? "Yes" : "No"}</p>
-          <p>Configuration type: Custom-built Hyggefis</p>
-          {isAdded ? (
-            <p className={styles.successText}>
-              Freshly added. <Link href="/cart">Open cart</Link>
-            </p>
-          ) : null}
+          <p
+            className={`${styles.purchaseMessage} ${
+              canAddToCart ? styles.availabilityText : styles.availabilityWarning
+            }`}
+          >
+            {stockMessage}
+          </p>
         </section>
       </aside>
+
+      {isCartDrawerOpen && cartItems.length > 0 ? (
+        <aside aria-label="Current basket" className={styles.cartDrawer}>
+          <div className={styles.cartDrawerHeader}>
+            <div>
+              <p className={styles.collectionLabel}>Basket</p>
+              <h2 className={styles.cartDrawerTitle}>Current selection</h2>
+            </div>
+            <button
+              aria-label="Close basket overview"
+              className={styles.cartDrawerClose}
+              onClick={() => setIsCartDrawerOpen(false)}
+              type="button"
+            >
+              x
+            </button>
+          </div>
+
+          <div className={styles.cartDrawerBody}>
+            {cartItems.map((item) => (
+              <article key={item.cartItemId} className={styles.cartDrawerItem}>
+                <div>
+                  <h3>{item.name}</h3>
+                  <p>
+                    Size: {item.size ?? "Unknown"} | Color: {item.color ?? "Unknown"}
+                  </p>
+                </div>
+                <div className={styles.cartDrawerItemMeta}>
+                  <span>x{item.quantity}</span>
+                  <strong>{formatDkk(item.price * item.quantity)}</strong>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className={styles.cartDrawerFooter}>
+            <p>
+              <strong>Total: {formatDkk(cartTotal)}</strong>
+            </p>
+            <Link className={styles.primaryButton} href="/checkout">
+              Go to checkout
+            </Link>
+          </div>
+        </aside>
+      ) : null}
     </section>
   );
 }
 
-function shadeHex(hex: string, adjustment: number) {
-  const normalizedHex = hex.replace("#", "");
-  const red = clampHexChannel(parseInt(normalizedHex.slice(0, 2), 16) + adjustment);
-  const green = clampHexChannel(parseInt(normalizedHex.slice(2, 4), 16) + adjustment);
-  const blue = clampHexChannel(parseInt(normalizedHex.slice(4, 6), 16) + adjustment);
+type TeddyPreviewProps = {
+  alt: string;
+  color: string;
+  priority?: boolean;
+};
 
-  return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
-}
-
-function clampHexChannel(value: number) {
-  return Math.max(0, Math.min(255, value));
-}
-
-function toHex(value: number) {
-  return value.toString(16).padStart(2, "0");
+function TeddyPreview({ alt, color, priority = false }: TeddyPreviewProps) {
+  return (
+    <div className={styles.teddyPreviewFrame}>
+      <Image
+        alt={alt}
+        className={styles.teddyPreviewImage}
+        fill
+        priority={priority}
+        sizes="(max-width: 820px) 380px, 560px"
+        src={teddyImageSrc}
+      />
+      <div
+        className={styles.teddyPreviewSweater}
+        style={{
+          ["--hoodie-color" as string]: color,
+          ["--sweater-mask" as string]: `url("${teddySweaterMaskSrc}")`,
+        }}
+      />
+    </div>
+  );
 }
 
 function getSizeLabel(size: string) {
@@ -329,37 +347,132 @@ function getSizeLabel(size: string) {
 function getBearScale(size: string) {
   switch (size.toLowerCase()) {
     case "mini":
-      return 0.72;
+      return 0.82;
     case "small":
-      return 0.86;
+      return 0.96;
     case "medium":
-      return 1;
+      return 1.1;
     case "large":
-      return 1.12;
+      return 1.28;
     case "giant":
-      return 1.24;
+      return 1.52;
     default:
-      return 1;
+      return 1.1;
   }
 }
 
-function getCheckoutReferenceProduct(products: Product[], selectedSize: string) {
-  const availableProducts = products.filter((product) => product.isAvailable);
-  const sizeMatches = availableProducts.filter(
-    (product) => product.size?.toLowerCase() === selectedSize.toLowerCase(),
+function getSelectedProduct(products: Product[], selectedSize: string, selectedColor: string) {
+  const sizeMatches = products.filter(
+    (product) => normalizeValue(product.size) === normalizeValue(selectedSize),
+  );
+  const exactColorMatches = sizeMatches.filter(
+    (product) => normalizeValue(product.color) === normalizeValue(selectedColor),
   );
 
+  if (exactColorMatches.length > 0) {
+    return {
+      isExactColorMatch: true,
+      product: getPreferredProduct(exactColorMatches),
+    };
+  }
+
   if (sizeMatches.length > 0) {
-    return sizeMatches.reduce((lowestPriceProduct, currentProduct) =>
-      currentProduct.price < lowestPriceProduct.price ? currentProduct : lowestPriceProduct,
-    );
+    return {
+      isExactColorMatch: false,
+      product: getPreferredProduct(sizeMatches),
+    };
   }
 
-  if (availableProducts.length > 0) {
-    return availableProducts.reduce((lowestPriceProduct, currentProduct) =>
-      currentProduct.price < lowestPriceProduct.price ? currentProduct : lowestPriceProduct,
-    );
+  return {
+    isExactColorMatch: false,
+    product: null,
+  };
+}
+
+function getMostPopularSize(products: Product[]) {
+  const stockBySize = new Map<string, number>();
+
+  for (const product of products) {
+    if (!product.isAvailable || !product.size) {
+      continue;
+    }
+
+    const matchingSize =
+      sizeOptions.find((size) => size.toLowerCase() === product.size?.toLowerCase()) ?? null;
+
+    if (!matchingSize) {
+      continue;
+    }
+
+    const currentStock = stockBySize.get(matchingSize) ?? 0;
+    stockBySize.set(matchingSize, currentStock + Math.max(product.stockQuantity, 0));
   }
 
-  return products[0] ?? null;
+  return sizeOptions.reduce((mostPopular, size) => {
+    const currentStock = stockBySize.get(size) ?? 0;
+    const mostPopularStock = stockBySize.get(mostPopular) ?? -1;
+
+    return currentStock > mostPopularStock ? size : mostPopular;
+  }, sizeOptions[0] ?? "Medium");
+}
+
+function getStockMessage(
+  product: Product | null,
+  selectedSize: string,
+  selectedColor: string,
+  isExactColorMatch: boolean,
+  remainingStock: number,
+) {
+  if (!product) {
+    return `${selectedSize} is not available in the current Hyggefis assortment.`;
+  }
+
+  if (!isExactColorMatch) {
+    return `${selectedColor} ${selectedSize.toLowerCase()} is not available right now. Please choose another color.`;
+  }
+
+  if (!product.isAvailable || product.stockQuantity <= 0) {
+    return `${selectedColor} ${selectedSize.toLowerCase()} is currently out of stock. Please choose another color or size.`;
+  }
+
+  if (remainingStock <= 0) {
+    return `You already added all available ${selectedColor.toLowerCase()} ${selectedSize.toLowerCase()} Hyggefis to your basket.`;
+  }
+
+  if (remainingStock === 1) {
+    return `Only 1 ${selectedColor.toLowerCase()} ${selectedSize.toLowerCase()} Hyggefis is left in stock.`;
+  }
+
+  if (remainingStock < product.stockQuantity) {
+    return `${remainingStock} ${selectedColor.toLowerCase()} ${selectedSize.toLowerCase()} Hyggefis are still available after the ones already in your basket.`;
+  }
+
+  return `${remainingStock} ${selectedColor.toLowerCase()} ${selectedSize.toLowerCase()} Hyggefis are ready for checkout.`;
+}
+
+function getPreferredProduct(products: Product[]) {
+  return products.reduce((preferredProduct, currentProduct) => {
+    if (preferredProduct.isAvailable !== currentProduct.isAvailable) {
+      return currentProduct.isAvailable ? currentProduct : preferredProduct;
+    }
+
+    return currentProduct.price < preferredProduct.price ? currentProduct : preferredProduct;
+  });
+}
+
+function normalizeValue(value: string | null | undefined) {
+  return (value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function getReservedQuantityForProduct(cartItems: CartItem[], productId: number | null) {
+  if (productId === null) {
+    return 0;
+  }
+
+  return cartItems
+    .filter((item) => item.productId === productId)
+    .reduce((total, item) => total + item.quantity, 0);
 }

@@ -41,7 +41,7 @@ export default async function ConfiguratorPage() {
   const { products, error } = await getProducts();
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.configuratorStage}`}>
       {error ? (
         <section className={styles.noticeCard}>
           <h2>Configurator is not available yet</h2>

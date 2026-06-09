@@ -49,6 +49,26 @@ public sealed class HyggeFrameApiClient(
             cancellationToken);
     }
 
+    public async Task<HyggeFrameOrderDto?> GetOrderAsync(int id, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/orders/{id}");
+        ApplyApiKey(request);
+
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        return await JsonSerializer.DeserializeAsync<HyggeFrameOrderDto>(
+            stream,
+            JsonSerializerOptions,
+            cancellationToken);
+    }
+
     public async Task<HyggeFrameOrderDto> CreateOrderAsync(
         HyggeFrameCreateOrderRequest orderRequest,
         CancellationToken cancellationToken)

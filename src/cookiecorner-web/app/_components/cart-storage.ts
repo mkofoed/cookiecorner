@@ -23,7 +23,9 @@ function readCart(): CartItem[] {
       productId: item.productId ?? 0,
       name: item.name ?? "Unnamed Hyggefis",
       price: item.price ?? 0,
-      quantity: item.quantity ?? 1,
+      quantity: normalizeQuantity(item.quantity),
+      stockQuantity:
+        typeof item.stockQuantity === "number" ? item.stockQuantity : null,
       size: item.size ?? null,
       color: item.color ?? null,
       configurationSummary: item.configurationSummary ?? [],
@@ -49,20 +51,32 @@ export function addToCart(product: Product) {
       item.productId === product.id &&
       (item.configurationSummary?.length ?? 0) === 0,
   );
+  const maxQuantityForItem = getRemainingStock(
+    cart,
+    product.id,
+    product.stockQuantity,
+    existingItem?.cartItemId,
+  );
 
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
+  if (existingItem && maxQuantityForItem > 0) {
+    existingItem.quantity = Math.min(
+      normalizeQuantity(existingItem.quantity + 1),
+      maxQuantityForItem,
+    );
+  } else if (maxQuantityForItem > 0) {
     cart.push({
       cartItemId: `${product.id}-${crypto.randomUUID()}`,
       productId: product.id,
       name: product.name,
       price: product.price,
-      quantity: 1,
+      quantity: normalizeQuantity(1),
+      stockQuantity: product.stockQuantity,
       size: product.size,
       color: product.color,
       configurationSummary: [],
     });
+  } else {
+    return;
   }
 
   writeCart(cart);
@@ -70,7 +84,6 @@ export function addToCart(product: Product) {
 
 type ConfiguredCartOptions = {
   color: string;
-  giftWrap: boolean;
   price: number;
   quantity: number;
   size: string;
@@ -78,20 +91,26 @@ type ConfiguredCartOptions = {
 
 export function addConfiguredToCart(product: Product, options: ConfiguredCartOptions) {
   const cart = readCart();
+  const remainingStock = getRemainingStock(cart, product.id, product.stockQuantity);
+  const nextQuantity = Math.min(normalizeQuantity(options.quantity), remainingStock);
+
+  if (nextQuantity <= 0) {
+    return;
+  }
 
   cart.push({
     cartItemId: `${product.id}-${crypto.randomUUID()}`,
     productId: product.id,
     name: "Custom Hyggefis",
     price: options.price,
-    quantity: options.quantity,
+    quantity: nextQuantity,
+    stockQuantity: product.stockQuantity,
     size: options.size,
     color: options.color,
     configurationSummary: [
       `Configured size: ${options.size}`,
       `Configured color: ${options.color}`,
-      `Quantity: ${options.quantity}`,
-      `Gift wrap: ${options.giftWrap ? "Yes" : "No"}`,
+      `Quantity: ${nextQuantity}`,
     ],
   });
 
@@ -99,11 +118,32 @@ export function addConfiguredToCart(product: Product, options: ConfiguredCartOpt
 }
 
 export function updateCartItemQuantity(cartItemId: string, quantity: number) {
-  const cart = readCart()
-    .map((item) => (item.cartItemId === cartItemId ? { ...item, quantity } : item))
+  const cart = readCart();
+  const existingItem = cart.find((item) => item.cartItemId === cartItemId);
+
+  if (!existingItem) {
+    return;
+  }
+
+  const nextQuantity = Math.min(
+    normalizeQuantity(quantity),
+    getRemainingStock(
+      cart,
+      existingItem.productId,
+      existingItem.stockQuantity ?? Number.MAX_SAFE_INTEGER,
+      cartItemId,
+    ),
+  );
+
+  const updatedCart = cart
+    .map((item) =>
+      item.cartItemId === cartItemId
+        ? { ...item, quantity: nextQuantity }
+        : item,
+    )
     .filter((item) => item.quantity > 0);
 
-  writeCart(cart);
+  writeCart(updatedCart);
 }
 
 export function removeCartItem(cartItemId: string) {
@@ -118,4 +158,28 @@ export function clearCart() {
 export function subscribeToCartUpdates(callback: () => void) {
   window.addEventListener(cartUpdatedEvent, callback);
   return () => window.removeEventListener(cartUpdatedEvent, callback);
+}
+
+function normalizeQuantity(quantity: number | null | undefined) {
+  if (!Number.isFinite(quantity) || quantity === undefined || quantity === null) {
+    return 1;
+  }
+
+  return Math.max(0, Math.floor(quantity));
+}
+
+function getRemainingStock(
+  cart: CartItem[],
+  productId: number,
+  stockQuantity: number,
+  excludedCartItemId?: string,
+) {
+  const reservedQuantity = cart
+    .filter(
+      (item) =>
+        item.productId === productId && item.cartItemId !== excludedCartItemId,
+    )
+    .reduce((total, item) => total + item.quantity, 0);
+
+  return Math.max(0, stockQuantity - reservedQuantity);
 }

@@ -1,0 +1,45 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="fur" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 260) rotate(70) scale(360 300)">
+      <stop stop-color="#6FE2FF"/>
+      <stop offset="0.55" stop-color="#2AB7E8"/>
+      <stop offset="1" stop-color="#1290C9"/>
+    </radialGradient>
+    <radialGradient id="belly" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(318 388) rotate(90) scale(160 138)">
+      <stop stop-color="#D9F8FF"/>
+      <stop offset="1" stop-color="#9EE9FF"/>
+    </radialGradient>
+    <linearGradient id="cookie" x1="430" y1="320" x2="558" y2="478" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3C887"/>
+      <stop offset="1" stop-color="#D58A48"/>
+    </linearGradient>
+    <filter id="shadow" x="40" y="20" width="620" height="640" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="26" flood-color="#16557B" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" opacity="0.92">
+    <path d="M190 172C182 132 212 102 248 104C276 54 346 42 392 90C446 62 514 94 526 154C582 172 614 240 588 298C624 342 620 408 578 450C590 512 540 564 482 560C454 604 398 626 344 606C286 636 214 608 186 548C124 544 74 486 88 420C46 374 42 300 96 258C88 212 130 174 190 172Z" fill="url(#fur)"/>
+    <ellipse cx="314" cy="396" rx="112" ry="92" fill="url(#belly)"/>
+    <circle cx="268" cy="250" r="34" fill="white"/>
+    <circle cx="366" cy="246" r="34" fill="white"/>
+    <circle cx="275" cy="258" r="14" fill="#102235"/>
+    <circle cx="374" cy="252" r="14" fill="#102235"/>
+    <circle cx="280" cy="252" r="5" fill="white"/>
+    <circle cx="379" cy="246" r="5" fill="white"/>
+    <ellipse cx="320" cy="318" rx="36" ry="24" fill="#123248"/>
+    <path d="M274 354C294 380 342 388 372 358" stroke="#123248" stroke-width="14" stroke-linecap="round"/>
+    <path d="M196 344C156 386 154 450 188 492" stroke="#1290C9" stroke-width="52" stroke-linecap="round"/>
+    <path d="M476 326C524 358 540 414 512 470" stroke="#1290C9" stroke-width="52" stroke-linecap="round"/>
+    <circle cx="496" cy="402" r="92" fill="url(#cookie)"/>
+    <circle cx="448" cy="372" r="12" fill="#8F552C"/>
+    <circle cx="514" cy="354" r="10" fill="#8F552C"/>
+    <circle cx="542" cy="418" r="11" fill="#8F552C"/>
+    <circle cx="474" cy="444" r="13" fill="#8F552C"/>
+    <circle cx="526" cy="470" r="9" fill="#8F552C"/>
+    <circle cx="438" cy="430" r="10" fill="#8F552C"/>
+    <path d="M122 520C160 494 218 508 242 552" stroke="#43C6F2" stroke-width="22" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="146" cy="554" r="10" fill="#D58A48"/>
+    <circle cx="174" cy="538" r="13" fill="#E3A15A"/>
+    <circle cx="208" cy="564" r="8" fill="#D58A48"/>
+  </g>
+</svg>

@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { clearCart, getCartItems, subscribeToCartUpdates } from "./cart-storage";
+import {
+  clearCart,
+  getCartItems,
+  removeCartItem,
+  subscribeToCartUpdates,
+  updateCartItemQuantity,
+} from "./cart-storage";
 import { formatDkk } from "./currency";
 import { CartItem, Order } from "./storefront-types";
 import styles from "./page-section.module.css";
@@ -103,9 +109,6 @@ export function CheckoutPageClient() {
           with status <strong>{submittedOrder.status}</strong>.
         </p>
         <p>Total amount: {formatDkk(submittedOrder.totalAmount)}</p>
-        <p>You can review previously placed orders and their statuses in the order history.</p>
-        <Link href="/orders">Open order history</Link>
-        <br />
         <Link href="/configurator">Create another Hyggefis</Link>
       </section>
     );
@@ -123,74 +126,122 @@ export function CheckoutPageClient() {
 
   return (
     <div className={styles.twoColumn}>
-      <form className={styles.formPanel} onSubmit={handleSubmit}>
-        <div className={styles.formGrid}>
-          <label className={styles.fieldLabel}>
-            Name
-            <input
-              className={styles.textInput}
-              onChange={(event) => setForm({ ...form, customerName: event.target.value })}
-              required
-              type="text"
-              value={form.customerName}
-            />
-          </label>
-          <label className={styles.fieldLabel}>
-            Email
-            <input
-              className={styles.textInput}
-              onChange={(event) => setForm({ ...form, customerEmail: event.target.value })}
-              required
-              type="email"
-              value={form.customerEmail}
-            />
-          </label>
-          <label className={styles.fieldLabel}>
-            Phone
-            <input
-              className={styles.textInput}
-              onChange={(event) => setForm({ ...form, customerPhone: event.target.value })}
-              type="tel"
-              value={form.customerPhone}
-            />
-          </label>
-          <label className={styles.fieldLabel}>
-            City
-            <input
-              className={styles.textInput}
-              onChange={(event) => setForm({ ...form, city: event.target.value })}
-              required
-              type="text"
-              value={form.city}
-            />
-          </label>
-          <label className={styles.fieldLabelFull}>
-            Shipping address
-            <input
-              className={styles.textInput}
-              onChange={(event) => setForm({ ...form, shippingAddress: event.target.value })}
-              required
-              type="text"
-              value={form.shippingAddress}
-            />
-          </label>
-          <label className={styles.fieldLabelFull}>
-            Notes
-            <textarea
-              className={styles.textArea}
-              onChange={(event) => setForm({ ...form, notes: event.target.value })}
-              rows={4}
-              value={form.notes}
-            />
-          </label>
-        </div>
+      <div className={styles.formPanel}>
+        <section className={styles.listPanel}>
+          <h2>Basket</h2>
+          {items.map((item) => (
+            <article key={item.cartItemId} className={styles.lineItem}>
+              <div>
+                <h3>{item.name}</h3>
+                <p>
+                  Size: {item.size ?? "Unknown"} | Color: {item.color ?? "Unknown"}
+                </p>
+                {item.configurationSummary?.length ? (
+                  <ul className={styles.list}>
+                    {item.configurationSummary.map((summaryLine) => (
+                      <li key={summaryLine}>{summaryLine}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                <p>Unit price: {formatDkk(item.price)}</p>
+              </div>
 
-        {error ? <p className={styles.errorText}>{error}</p> : null}
+              <div className={styles.lineItemActions}>
+                <label className={styles.fieldLabel}>
+                  Quantity
+                  <input
+                    className={styles.numberInput}
+                    max={item.stockQuantity ?? undefined}
+                    min={1}
+                    step={1}
+                    onChange={(event) =>
+                      updateCartItemQuantity(item.cartItemId, Number(event.target.value))
+                    }
+                    type="number"
+                    value={item.quantity}
+                  />
+                </label>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => removeCartItem(item.cartItemId)}
+                  type="button"
+                >
+                  Remove
+                </button>
+              </div>
+            </article>
+          ))}
+        </section>
 
-        <button className={styles.primaryButton} disabled={isSubmitting} type="submit">
-          {isSubmitting ? "Placing order..." : "Place order"}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.formGrid}>
+            <label className={styles.fieldLabel}>
+              Name
+              <input
+                className={styles.textInput}
+                onChange={(event) => setForm({ ...form, customerName: event.target.value })}
+                required
+                type="text"
+                value={form.customerName}
+              />
+            </label>
+            <label className={styles.fieldLabel}>
+              Email
+              <input
+                className={styles.textInput}
+                onChange={(event) => setForm({ ...form, customerEmail: event.target.value })}
+                required
+                type="email"
+                value={form.customerEmail}
+              />
+            </label>
+            <label className={styles.fieldLabel}>
+              Phone
+              <input
+                className={styles.textInput}
+                onChange={(event) => setForm({ ...form, customerPhone: event.target.value })}
+                type="tel"
+                value={form.customerPhone}
+              />
+            </label>
+            <label className={styles.fieldLabel}>
+              City
+              <input
+                className={styles.textInput}
+                onChange={(event) => setForm({ ...form, city: event.target.value })}
+                required
+                type="text"
+                value={form.city}
+              />
+            </label>
+            <label className={styles.fieldLabelFull}>
+              Shipping address
+              <input
+                className={styles.textInput}
+                onChange={(event) => setForm({ ...form, shippingAddress: event.target.value })}
+                required
+                type="text"
+                value={form.shippingAddress}
+              />
+            </label>
+            <label className={styles.fieldLabelFull}>
+              Notes
+              <textarea
+                className={styles.textArea}
+                onChange={(event) => setForm({ ...form, notes: event.target.value })}
+                rows={4}
+                value={form.notes}
+              />
+            </label>
+          </div>
+
+          {error ? <p className={styles.errorText}>{error}</p> : null}
+
+          <button className={styles.primaryButton} disabled={isSubmitting} type="submit">
+            {isSubmitting ? "Placing order..." : "Place order"}
+          </button>
+        </form>
+      </div>
 
       <aside className={styles.noticeCard}>
         <h2>Order summary</h2>

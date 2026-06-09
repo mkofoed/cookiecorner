@@ -8,5 +8,7 @@ public interface IOrderHistoryStore
 
     Task<IReadOnlyCollection<Order>> GetOrdersAsync(CancellationToken cancellationToken);
 
+    Task<Order?> GetOrderAsync(int id, CancellationToken cancellationToken);
+
     Task<Order?> GetOrderAsync(string orderNumber, CancellationToken cancellationToken);
 }

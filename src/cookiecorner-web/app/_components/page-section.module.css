@@ -4,7 +4,24 @@
   gap: 28px;
 }
 
+.configuratorStage {
+  position: relative;
+}
+
+.configuratorStage::after {
+  content: "";
+  position: absolute;
+  left: -140px;
+  bottom: 96px;
+  width: 240px;
+  height: 240px;
+  background: url("/images/configurator/bitten-cookie.svg") center / contain no-repeat;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 .productLayout {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(360px, 0.95fr);
   min-height: calc(100vh - 190px);
@@ -16,10 +33,10 @@
 }
 
 .productVisualPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding: 40px 48px 36px;
+  display: grid;
+  grid-template-rows: auto minmax(420px, 1fr);
+  gap: 18px;
+  padding: 28px 32px 24px;
   background:
     radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.96) 0 110px, transparent 111px),
     radial-gradient(circle at 76% 22%, rgba(255, 214, 170, 0.5) 0 120px, transparent 121px),
@@ -55,144 +72,51 @@
 }
 
 .heroShowcase {
+  position: relative;
   display: grid;
   place-items: center;
-  min-height: 640px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .productMascot {
   --bear-scale: 1;
   --hoodie-color: #213a63;
-  --hoodie-shadow: #162748;
   position: relative;
-  width: 470px;
-  height: 560px;
+  width: 560px;
+  height: 700px;
   transform: scale(var(--bear-scale));
-  transform-origin: center bottom;
+  transform-origin: center center;
   transition: transform 0.25s ease;
+  z-index: 1;
 }
 
-.productMascotEarLeft,
-.productMascotEarRight {
+.teddyPreviewFrame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+}
+
+.teddyPreviewImage {
+  object-fit: contain;
+  filter: drop-shadow(0 18px 32px rgba(44, 24, 12, 0.18));
+}
+
+.teddyPreviewSweater {
   position: absolute;
-  top: 60px;
-  width: 105px;
-  height: 105px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #d59d65 0%, #b97742 100%);
-}
-
-.productMascotEarLeft {
-  left: 78px;
-}
-
-.productMascotEarRight {
-  right: 78px;
-}
-
-.productMascotHead {
-  position: absolute;
-  left: 50%;
-  top: 72px;
-  width: 260px;
-  height: 240px;
-  transform: translateX(-50%);
-  border-radius: 48% 48% 44% 44%;
-  background: linear-gradient(180deg, #ddab74 0%, #bb7c47 100%);
-  box-shadow: inset 0 -14px 0 rgba(111, 67, 37, 0.08);
-}
-
-.productMascotFace {
-  position: absolute;
-  left: 50%;
-  bottom: 26px;
-  width: 118px;
-  height: 96px;
-  transform: translateX(-50%);
-  border-radius: 46% 46% 54% 54%;
-  background: linear-gradient(180deg, #f2d2ac 0%, #e6bf92 100%);
-}
-
-.productMascotEyes {
-  position: absolute;
-  top: 24px;
-  left: 50%;
-  width: 62px;
-  display: flex;
-  justify-content: space-between;
-  transform: translateX(-50%);
-}
-
-.productMascotEyes span {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #1d1817;
-}
-
-.productMascotNose {
-  position: absolute;
-  left: 50%;
-  top: 40px;
-  width: 26px;
-  height: 20px;
-  transform: translateX(-50%);
-  border-radius: 50% 50% 60% 60%;
-  background: #55341c;
-}
-
-.productMascotSmile {
-  position: absolute;
-  left: 50%;
-  top: 54px;
-  width: 38px;
-  height: 20px;
-  transform: translateX(-50%);
-  border-bottom: 3px solid #3a2416;
-  border-radius: 0 0 28px 28px;
-}
-
-.productMascotBody {
-  position: absolute;
-  left: 50%;
-  bottom: 32px;
-  width: 320px;
-  height: 270px;
-  transform: translateX(-50%);
-  border-radius: 34% 34% 24% 24%;
-  background: linear-gradient(180deg, var(--hoodie-color) 0%, var(--hoodie-shadow) 100%);
-  box-shadow: inset 0 -12px 0 rgba(0, 0, 0, 0.12);
-}
-
-.productMascotBody::before,
-.productMascotBody::after {
-  content: "";
-  position: absolute;
-  top: 110px;
-  width: 90px;
-  height: 120px;
-  border-radius: 40px;
-  background: inherit;
-}
-
-.productMascotBody::before {
-  left: -34px;
-  transform: rotate(18deg);
-}
-
-.productMascotBody::after {
-  right: -34px;
-  transform: rotate(-18deg);
-}
-
-.productMascotWordmark {
-  position: absolute;
-  left: 50%;
-  top: 92px;
-  transform: translateX(-50%);
-  font-size: 50px;
-  font-weight: 700;
-  letter-spacing: -0.05em;
+  inset: 0;
+  background: var(--hoodie-color);
+  mix-blend-mode: color;
+  pointer-events: none;
+  -webkit-mask-image: var(--sweater-mask);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-image: var(--sweater-mask);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
 
 .thumbnailRow {
@@ -223,16 +147,15 @@
 }
 
 .thumbnailMascot {
-  --hoodie-color: #213a63;
-  --hoodie-shadow: #162748;
+  position: relative;
   width: 110px;
   height: 110px;
   border-radius: 34px;
-  background:
-    radial-gradient(circle at 50% 26%, #d59d65 0 26px, transparent 27px),
-    radial-gradient(circle at 34% 18%, #d59d65 0 14px, transparent 15px),
-    radial-gradient(circle at 66% 18%, #d59d65 0 14px, transparent 15px),
-    linear-gradient(180deg, transparent 0 38%, var(--hoodie-color) 38%, var(--hoodie-shadow) 100%);
+  overflow: hidden;
+}
+
+.thumbnailMascot .teddyPreviewImage {
+  filter: none;
 }
 
 .productSidebar {
@@ -286,6 +209,10 @@
 }
 
 .selectorSquare {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 66px;
   height: 66px;
   border-radius: 24px;
@@ -293,10 +220,33 @@
   font-weight: 700;
 }
 
+.selectorSquareLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .selectorSquareActive {
   border-color: #b95c2c;
   background: linear-gradient(180deg, #d97a41 0%, #b95c2c 100%);
   color: #ffffff;
+}
+
+.selectorBadge {
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  transform: translateX(-50%);
+  min-width: max-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f6c95b 0%, #e8a73a 100%);
+  box-shadow: 0 8px 18px rgba(128, 77, 25, 0.2);
+  color: #5a3217;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .colorSwatch {
@@ -349,7 +299,8 @@
 
 .purchaseRow {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: 180px auto;
+  align-items: end;
   gap: 12px;
   padding: 34px 40px 22px;
 }
@@ -377,27 +328,41 @@
 }
 
 .ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   align-self: end;
+  width: 72px;
   height: 72px;
   border: 1px solid #b95c2c;
   border-radius: 20px;
   background: linear-gradient(180deg, #d97a41 0%, #b95c2c 100%);
   color: #ffffff;
   font: inherit;
-  font-size: 18px;
+  font-size: 42px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  line-height: 1;
   cursor: pointer;
 }
 
-.recipeSummary {
-  padding: 0 40px 40px;
+.ctaButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
-.recipeSummary p {
-  margin-bottom: 10px;
-  color: #6f584b;
+.purchaseMessage {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.availabilityText {
+  color: #21613d;
+}
+
+.availabilityWarning {
+  color: #a32727;
 }
 
 .hero {
@@ -753,12 +718,111 @@
   gap: 16px;
 }
 
-.successText {
-  color: #21613d;
-  line-height: 1.7;
+.cartDrawer {
+  position: fixed;
+  top: 128px;
+  right: 24px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: min(calc(100vw - 32px), 360px);
+  max-height: min(calc(100vh - 152px), 720px);
+  padding: 22px;
+  border: 2px solid #e2b78f;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 226, 191, 0.45) 0 54px, transparent 55px),
+    linear-gradient(180deg, rgba(255, 251, 245, 0.98) 0%, rgba(255, 240, 221, 0.98) 100%);
+  box-shadow: 0 24px 60px rgba(76, 38, 17, 0.2);
+}
+
+.cartDrawerHeader,
+.cartDrawerItem,
+.cartDrawerFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cartDrawerHeader {
+  align-items: flex-start;
+}
+
+.cartDrawerTitle {
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+
+.cartDrawerClose {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d9b38e;
+  border-radius: 999px;
+  background: #fffaf4;
+  color: #6c4127;
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cartDrawerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+.cartDrawerItem {
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0d7c7;
+}
+
+.cartDrawerItem:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.cartDrawerItem h3 {
+  font-size: 18px;
+}
+
+.cartDrawerItem p {
+  margin-top: 4px;
+  color: #6f584b;
+}
+
+.cartDrawerItemMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: max-content;
+}
+
+.cartDrawerFooter {
+  align-items: center;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid #f0d7c7;
 }
 
 @media (max-width: 820px) {
+  .configuratorStage {
+    padding-left: 0;
+    padding-top: 88px;
+  }
+
+  .configuratorStage::after {
+    top: 22px;
+    left: 8px;
+    bottom: auto;
+    width: 150px;
+    height: 150px;
+    opacity: 0.55;
+  }
+
   .productLayout,
   .grid,
   .statusPanel,
@@ -771,74 +835,35 @@
   .productVisualPanel,
   .sidebarSection,
   .purchaseRow,
-  .recipeSummary {
+  .cartDrawer {
     padding-left: 24px;
     padding-right: 24px;
   }
 
+  .productVisualPanel {
+    grid-template-rows: auto minmax(360px, 1fr);
+  }
+
   .heroShowcase {
-    min-height: 440px;
+    min-height: 0;
   }
 
   .productMascot {
-    width: 320px;
-    height: 400px;
-  }
-
-  .productMascotEarLeft,
-  .productMascotEarRight {
-    top: 42px;
-    width: 76px;
-    height: 76px;
-  }
-
-  .productMascotEarLeft {
-    left: 54px;
-  }
-
-  .productMascotEarRight {
-    right: 54px;
-  }
-
-  .productMascotHead {
-    top: 52px;
-    width: 182px;
-    height: 170px;
-  }
-
-  .productMascotFace {
-    width: 82px;
-    height: 66px;
-  }
-
-  .productMascotBody {
-    width: 220px;
-    height: 188px;
-  }
-
-  .productMascotBody::before,
-  .productMascotBody::after {
-    top: 72px;
-    width: 62px;
-    height: 88px;
-  }
-
-  .productMascotWordmark {
-    top: 68px;
-    font-size: 34px;
-  }
-
-  .thumbnailRow {
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .thumbnailCard {
-    min-width: 120px;
+    width: 380px;
+    height: 500px;
   }
 
   .purchaseRow {
     grid-template-columns: 1fr;
+  }
+
+  .cartDrawer {
+    top: auto;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    width: auto;
+    max-height: 60vh;
   }
 
   .hero {

@@ -1,0 +1,26 @@
+<svg width="520" height="520" viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="cookie" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(202 164) rotate(52) scale(292 302)">
+      <stop stop-color="#F7D49C"/>
+      <stop offset="0.62" stop-color="#E6A660"/>
+      <stop offset="1" stop-color="#CB7E3F"/>
+    </radialGradient>
+    <filter id="shadow" x="0" y="0" width="520" height="520" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#A15C2B" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M333 44C396 58 448 96 475 154C501 210 499 275 468 332C438 389 383 434 320 456C259 477 190 474 132 444C73 413 28 358 16 292C4 226 25 156 68 104C110 52 173 22 239 18C273 16 307 23 333 44Z" fill="url(#cookie)"/>
+    <path d="M91 69C119 50 154 42 188 46C175 72 186 104 214 120C193 128 176 144 164 164C146 148 123 140 99 143C86 120 81 94 91 69Z" fill="#FFF9F1"/>
+    <path d="M92 68C115 90 144 94 169 84C167 111 184 137 209 149C184 160 168 184 167 210C142 199 113 204 89 223C77 200 69 174 71 148C73 119 81 92 92 68Z" fill="#FFF9F1"/>
+    <circle cx="152" cy="182" r="16" fill="#8F552C"/>
+    <circle cx="242" cy="112" r="14" fill="#8F552C"/>
+    <circle cx="300" cy="206" r="18" fill="#8F552C"/>
+    <circle cx="373" cy="148" r="15" fill="#8F552C"/>
+    <circle cx="392" cy="272" r="13" fill="#8F552C"/>
+    <circle cx="284" cy="332" r="17" fill="#8F552C"/>
+    <circle cx="192" cy="292" r="14" fill="#8F552C"/>
+    <circle cx="124" cy="354" r="11" fill="#8F552C"/>
+    <circle cx="346" cy="396" r="12" fill="#8F552C"/>
+  </g>
+</svg>

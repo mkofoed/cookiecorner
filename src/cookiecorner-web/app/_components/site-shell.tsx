@@ -1,10 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
+import { CookieConsentBanner } from "./cookie-consent-banner";
 import styles from "./site-shell.module.css";
 
 const navigationItems = [
-  { href: "/configurator", label: "Cookie Lab" },
-  { href: "/orders", label: "Orders" },
-  { href: "/cart", label: "Cart" },
   { href: "/checkout", label: "Checkout" },
 ];
 
@@ -14,12 +13,16 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div className={styles.brand}>
-            <Link className={styles.brandName} href="/configurator">
-              CookieCorner
+            <Link aria-label="Go to Cookie Lab" className={styles.brandIconLink} href="/configurator">
+              <Image
+                alt=""
+                className={styles.brandIcon}
+                height={80}
+                priority
+                src="/images/header/brand-icon.png"
+                width={80}
+              />
             </Link>
-            <span className={styles.brandTagline}>
-              Whisk, sprinkle, and launch your custom Hyggefis
-            </span>
           </div>
 
           <nav className={styles.nav} aria-label="Primary">
@@ -33,6 +36,7 @@ export function SiteShell({ children }: Readonly<{ children: React.ReactNode }>)
       </header>
 
       <main className={styles.content}>{children}</main>
+      <CookieConsentBanner />
 
       <footer className={styles.footer}>
         <div className={styles.footerInner}>

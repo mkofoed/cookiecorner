@@ -6,6 +6,8 @@ public interface IHyggeFrameApiClient
 
     Task<HyggeFrameProductDto?> GetProductAsync(int id, CancellationToken cancellationToken);
 
+    Task<HyggeFrameOrderDto?> GetOrderAsync(int id, CancellationToken cancellationToken);
+
     Task<HyggeFrameOrderDto> CreateOrderAsync(
         HyggeFrameCreateOrderRequest request,
         CancellationToken cancellationToken);

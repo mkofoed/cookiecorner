@@ -16,6 +16,7 @@ export type CartItem = {
   name: string;
   price: number;
   quantity: number;
+  stockQuantity: number | null;
   size: string | null;
   color: string | null;
   configurationSummary?: string[];

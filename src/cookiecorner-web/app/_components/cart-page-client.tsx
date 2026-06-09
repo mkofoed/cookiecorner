@@ -57,6 +57,7 @@ export function CartPageClient() {
                 Quantity
                 <input
                   className={styles.numberInput}
+                  max={item.stockQuantity ?? undefined}
                   min={1}
                   onChange={(event) =>
                     updateCartItemQuantity(item.cartItemId, Number(event.target.value))

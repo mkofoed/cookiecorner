@@ -24,6 +24,36 @@ public sealed class OrdersController(
         return order is null ? NotFound() : Ok(order);
     }
 
+    [HttpGet("by-id/{id:int}")]
+    public async Task<IActionResult> GetOrderById(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var refreshedOrder = await orderCheckoutService.RefreshOrderAsync(id, cancellationToken);
+            if (refreshedOrder is not null)
+            {
+                return Ok(refreshedOrder);
+            }
+
+            var cachedOrder = await orderHistoryStore.GetOrderAsync(id, cancellationToken);
+            return cachedOrder is null ? NotFound() : Ok(cachedOrder);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Problem(
+                detail: exception.Message,
+                statusCode: StatusCodes.Status503ServiceUnavailable,
+                title: "HyggeFrame API configuration is incomplete.");
+        }
+        catch (HttpRequestException exception)
+        {
+            return Problem(
+                detail: exception.Message,
+                statusCode: StatusCodes.Status502BadGateway,
+                title: "Unable to refresh the order from HyggeFrame.");
+        }
+    }
+
     [HttpPost]
     public async Task<IActionResult> PlaceOrder(
         [FromBody] PlaceOrderRequest request,

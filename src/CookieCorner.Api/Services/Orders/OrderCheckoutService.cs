@@ -30,37 +30,25 @@ public sealed class OrderCheckoutService(
         };
 
         var order = await hyggeFrameApiClient.CreateOrderAsync(hyggeFrameRequest, cancellationToken);
-        var mappedOrder = Map(order);
+        var mappedOrder = OrderMapper.Map(order);
         await orderHistoryStore.SaveAsync(mappedOrder, cancellationToken);
 
         return mappedOrder;
     }
 
-    private static Order Map(HyggeFrameOrderDto dto)
+    public async Task<Order?> RefreshOrderAsync(int id, CancellationToken cancellationToken)
     {
-        return new Order(
-            dto.Id,
-            dto.OrderNumber ?? string.Empty,
-            dto.CustomerId,
-            dto.CustomerName ?? string.Empty,
-            dto.CustomerEmail ?? string.Empty,
-            ParseCountry(dto.HyggeCountry),
-            ParseStatus(dto.Status),
-            dto.Notes,
-            dto.ShippingAddress ?? string.Empty,
-            dto.TotalAmount,
-            dto.CreatedAt,
-            dto.UpdatedAt,
-            dto.Items?.Select(item => new OrderItem(
-                item.Id,
-                item.ProductId,
-                item.ProductName ?? string.Empty,
-                ParseBearSize(item.ProductSize),
-                item.ProductColor,
-                item.Quantity,
-                item.UnitPrice,
-                item.LineTotal,
-                null)).ToArray() ?? []);
+        var order = await hyggeFrameApiClient.GetOrderAsync(id, cancellationToken);
+
+        if (order is null)
+        {
+            return null;
+        }
+
+        var mappedOrder = OrderMapper.Map(order);
+        await orderHistoryStore.SaveAsync(mappedOrder, cancellationToken);
+
+        return mappedOrder;
     }
 
     private static void Validate(PlaceOrderRequest request)
@@ -94,26 +82,5 @@ public sealed class OrderCheckoutService(
         {
             throw new ArgumentException("All order item quantities must be greater than zero.", nameof(request));
         }
-    }
-
-    private static BearSize? ParseBearSize(string? size)
-    {
-        return Enum.TryParse<BearSize>(size, ignoreCase: true, out var parsedSize)
-            ? parsedSize
-            : null;
-    }
-
-    private static HyggeCountry ParseCountry(string? country)
-    {
-        return Enum.TryParse<HyggeCountry>(country, ignoreCase: true, out var parsedCountry)
-            ? parsedCountry
-            : HyggeCountry.CookieCorner;
-    }
-
-    private static OrderStatus ParseStatus(string? status)
-    {
-        return Enum.TryParse<OrderStatus>(status, ignoreCase: true, out var parsedStatus)
-            ? parsedStatus
-            : OrderStatus.Pending;
     }
 }

@@ -6,11 +6,7 @@ export default function CheckoutPage() {
     <div className={styles.page}>
       <section className={styles.hero}>
         <span className={styles.eyebrow}>Checkout</span>
-        <h1>Finish the bakery order.</h1>
-        <p>
-          Add delivery details, review the basket, and place the CookieCorner
-          order through HyggeFrame.
-        </p>
+        <h1>Review and place your order.</h1>
       </section>
 
       <CheckoutPageClient />
